@@ -99,3 +99,9 @@ You can set stdin and stdout to use files, pipes, or both in powerful combinatio
 - [5.1] Add support for JSON input and output
 - [5.2] Add support for CSV input and output
 - [5.3] Add support for CLI input and output
+- [5.4] Add support for Parquet input and output
+- [5.5] Add support for NetCDF input and output
+- [5.6] Add support for FASTA/FASTQ input and output
+- [5.7] Add support for HDF5 input and output
+- [5.8] Add support for SDF input and output
+- [5.9] Add support for PDB input and output
