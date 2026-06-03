@@ -7,8 +7,7 @@ All linear algebra operations are performed using [NumPy](https://github.com/num
 
 ### I/O
 You can set the stdin and stdout to use files, pipes or both in awesome combinations.
-
-### Supported file types:
+####  Supported file types:
 - json
 - csv
 
