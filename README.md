@@ -13,6 +13,8 @@ You can set stdin and stdout to use files, pipes, or both in powerful combinatio
 
 ### Supported File Types
 
+Hint: to support a very big number of filetype, instead to implement a complete parser or worse a huge library for any filetype, read the raw file, every time you encounter a number, consider that number a part of the matrix or the math object, and after based on the file type, delete the unusefull number, or something like that
+
 **General Purpose**
 
 | Format | Extensions |
