@@ -7,9 +7,15 @@ All operations are performed using [NumPy](https://github.com/numpy/numpy).
 
 ---
 
-## I/O
+### I/O
 
 You can set stdin and stdout to use files, pipes, or both in powerful combinations.
+
+### Argument Parser 
+
+The argument parser should be devided by commands, like BMO (basic matrix operations), checks, rotation, factorization and so on, 
+Each command should be devided by single feature, so every final feature should be accessible via a command and not by direct access,
+Nothing forbids to organize the command accesible feature in sub-commands and so on 
 
 ### Supported File Types
 
@@ -59,10 +65,7 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 ---
 
 ## TODO: 
-- [1] Implement argument parser
-- [1.1] The argument parser should be devided by commands, like BMO (basic matrix operations), checks, rotation, factorization
-- [1.2] Each command should be devided by single feature, so every final feature should be accessible via a command
-- [1.3] Nothing forbids to organize the feature in sub-commands and so on 
+
 
 ## Feature
 
