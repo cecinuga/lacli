@@ -30,7 +30,6 @@ Nothing forbids to organize the command accesible feature in sub-commands and so
 
 **General Purpose**
 
-|--------|------------|-------------|
 | Format | Extensions | Supported |
 |--------|------------|-------------|
 | JSON | `.json` | NO |
