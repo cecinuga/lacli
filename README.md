@@ -28,6 +28,7 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 |--------|------------|-------------|
 | HDF5 | `.h5`, `.hdf5` | Hierarchical Data Format. Essential for storing massive, highly complex, and multidimensional datasets |
 | NetCDF | `.nc` | Network Common Data Form. Heavily utilized in atmospheric, oceanic, and meteorological sciences to store array-oriented scientific data |
+| Numpy | `.npy`,`.npz` | A simple format for saving numpy arrays to disk with the full information about them
 
 **Bioinformatics & Genomics**
 
