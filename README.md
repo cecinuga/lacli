@@ -99,14 +99,20 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 - [4.5] add linear regression
 
 ### [5] I/O Support
-- [5.1] Add support for JSON input and output
-- [5.2] Add support for CSV input and output
-- [5.3] Add support for CLI input and output
-- [5.4] Add support for Parquet input and output
-- [5.5] Add support for NetCDF input and output
-- [5.6] Add support for FASTA/FASTQ input and output
-- [5.7] Add support for HDF5 input and output
-- [5.8] Add support for SDF input and output
-- [5.9] Add support for PDB input and output
-- [5.10] Add support for Numpy input and output
-- [5.11] Add support for Matlab input and output
+The support word below means support for input and output (read/write) in combinations between file format
+- [5.1] Add support for JSON 
+- [5.2] Add support for CSV 
+- [5.3] Add support for CLI 
+- [5.4] Add support for Parquet 
+- [5.5] Add support for NetCDF 
+- [5.6] Add support for FASTA/FASTQ 
+- [5.7] Add support for HDF5 
+- [5.8] Add support for SDF 
+- [5.9] Add support for PDB 
+- [5.10] Add support for Numpy 
+- [5.11] Add support for Matlab 
+- [5.12] Add support for GGML 
+- [5.13] Add support for GGUF
+- [5.14] Add support for ONNX
+- [5.15] Add support for Matrix Market
+- [5.16] Add support for PyTorch
