@@ -21,44 +21,45 @@ Nothing forbids to organize the command accesible feature in sub-commands and so
 
 **General Purpose**
 
-| Format | Extensions |
-|--------|------------|
-| JSON | `.json` |
-| CSV | `.csv` |
+|--------|------------|-------------|
+| Format | Extensions | Supported |
+|--------|------------|-------------|
+| JSON | `.json` | NO |
+| CSV | `.csv` | NO |
 
 **Multidimensional & Big Data Formats**
-
-| Format | Extensions | Description |
-|--------|------------|-------------|
-| Numpy | `.npy`,`.npz` | A simple format for saving numpy arrays to disk with the full information about them
-| Matlab | `.mat` | The official matlab file format to store array and general purpose data
-| HDF5 | `.h5`, `.hdf5` | Hierarchical Data Format. Essential for storing massive, highly complex, and multidimensional datasets |
-| NetCDF | `.nc` | Network Common Data Form. Heavily utilized in atmospheric, oceanic, and meteorological sciences to store array-oriented scientific data |
-| Matrix Market  | `.mtx` | The Matrix Market (MM) exchange formats provide a simple mechanism to facilitate the exchange of matrix data
-| PyTorch | `.pt`, `.pth` | The official PyTorch format to store model weights and architecture
-| GGML | `.ggml` | GGML is an open-source tensor library written in C and C++ designed for running machine learning models  
-| GGUF | `.gguf` | GGUF (GPT-Generated Unified Format) is a highly popular file format designed to store and run large language models (LLMs)
-| ONNX | `.onnx` | ONNX is an open format built to represent machine learning model
+|--------|------------|-------------|-------------|
+| Format | Extensions | Description | Supported |
+|--------|------------|-------------|-------------|
+| Numpy | `.npy`,`.npz` | A simple format for saving numpy arrays to disk with the full information about them | NO |
+| Matlab | `.mat` | The official matlab file format to store array and general purpose data | NO |
+| HDF5 | `.h5`, `.hdf5` | Hierarchical Data Format. Essential for storing massive, highly complex, and multidimensional datasets | NO |
+| NetCDF | `.nc` | Network Common Data Form. Heavily utilized in atmospheric, oceanic, and meteorological sciences to store array-oriented scientific data | NO |
+| Matrix Market  | `.mtx` | The Matrix Market (MM) exchange formats provide a simple mechanism to facilitate the exchange of matrix data | NO |
+| PyTorch | `.pt`, `.pth` | The official PyTorch format to store model weights and architecture | NO |
+| GGML | `.ggml` | GGML is an open-source tensor library written in C and C++ designed for running machine learning models | NO |
+| GGUF | `.gguf` | GGUF (GPT-Generated Unified Format) is a highly popular file format designed to store and run large language models (LLMs) | NO |
+| ONNX | `.onnx` | ONNX is an open format built to represent machine learning model | NO |
 
 **Bioinformatics & Genomics**
-
-| Format | Extensions | Description |
-|--------|------------|-------------|
-| FASTA/FASTQ | `.fasta`, `.fastq` | Industry standards for genomic data |
-| BAM/SAM | `.bam`, `.sam` | Compressed binary formats used to store sequence alignments mapped to a reference genome |
+|--------|------------|-------------|-------------|
+| Format | Extensions | Description | Supported |
+|--------|------------|-------------|-------------|
+| FASTA/FASTQ | `.fasta`, `.fastq` | Industry standards for genomic data | NO |
+| BAM/SAM | `.bam`, `.sam` | Compressed binary formats used to store sequence alignments mapped to a reference genome | NO |
 
 **Chemistry & Material Science**
-
-| Format | Extensions | Description |
-|--------|------------|-------------|
-| PDB | `.pdb` | Protein Data Bank. Used to store 3D structural data for biological macromolecules, such as proteins and nucleic acids |
-| SDF | `.sdf` | Structure Data File. Contains chemical structures and associated tabular or numerical properties |
+|--------|------------|-------------|-------------|
+| Format | Extensions | Description | Supported |
+|--------|------------|-------------|-------------|
+| PDB | `.pdb` | Protein Data Bank. Used to store 3D structural data for biological macromolecules, such as proteins and nucleic acids | NO |
+| SDF | `.sdf` | Structure Data File. Contains chemical structures and associated tabular or numerical properties | NO |
 
 **Tabular Data & Statistics**
-
-| Format | Extensions | Description |
-|--------|------------|-------------|
-| Parquet | `.parquet` | Highly efficient, columnar storage used extensively in data science |
+|--------|------------|-------------|-------------|
+| Format | Extensions | Description | Supported |
+|--------|------------|-------------|-------------|
+| Parquet | `.parquet` | Highly efficient, columnar storage used extensively in data science | NO |
 
 ---
 
