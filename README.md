@@ -58,61 +58,67 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 
 ---
 
-## Roadmap
+## TODO: 
+- [1] Implement argument parser
+- [1.1] The argument parser should be devided by commands, like BMO (basic matrix operations), checks, rotation, factorization
+- [1.2] Each command should be devided by single feature, so every final feature should be accessible via a command
+- [1.3] Nothing forbids to organize the feature in sub-commands and so on 
+
+## Feature
 
 ### [0] Basic Matrix Operations
 - [0.1] matrix mul (arbitrary dimensions)
-- [0.2] matrix add
+- [0.2] matrix sum
 - [0.3] matrix scalar mul
 - [0.4] scalar dot product
-- [0.5] scalar add
-- [0.6] add inverse compute
-- [0.7] add transpose compute
-- [0.8] add rank compute
+- [0.5] scalar sum
+- [0.6] inverse compute
+- [0.7] transpose compute
+- [0.8] rank compute
 
 ### [1] Checks
-- [1.1] add invertability check
-- [1.2] add vectors independence check
-- [1.3] add vectors orthogonality check
-- [1.4] add symmetric check
-- [1.5] add triangular check
-- [1.6] add positive definite check
+- [1.1] invertability check
+- [1.2] vectors independence check
+- [1.3] vectors orthogonality check
+- [1.4] symmetric check
+- [1.5] triangular check
+- [1.6] positive definite check
 
 ### [2] Rotations
-- [2.1] add rotation matrix computation (input: matrix, angle, [axis], [center], [scale], [shear], [perspective])
+- [2.1] rotation matrix computation (input: matrix, angle, [axis], [center], [scale], [shear], [perspective])
 
 ### [3] Factorization
-- [3.1] add gauss-jordan elimination
-- [3.2] add LU decomposition
-- [3.3] add LDU decomposition
-- [3.4] add QR decomposition
-- [3.5] add Cholesky decomposition
-- [3.6] add orthogonal decomposition
-- [3.7] add SVD
-- [3.8] add eigenvalue decomposition
+- [3.1] gauss-jordan elimination
+- [3.2] LU decomposition
+- [3.3] LDU decomposition
+- [3.4] QR decomposition
+- [3.5] Cholesky decomposition
+- [3.6] orthogonal decomposition
+- [3.7] SVD
+- [3.8] eigenvalue decomposition
 
 ### [4] Least Squares
-- [4.1] add least squares
-- [4.2] add weighted least squares
-- [4.3] add least squares with regularization
-- [4.4] add regularization
-- [4.5] add linear regression
+- [4.1] least squares
+- [4.2] weighted least squares
+- [4.3] least squares with regularization
+- [4.4] regularization
+- [4.5] linear regression
 
 ### [5] I/O Support
 The support word below means support for input and output (read/write) in combinations between file format
-- [5.1] Add support for JSON 
-- [5.2] Add support for CSV 
-- [5.3] Add support for CLI 
-- [5.4] Add support for Parquet 
-- [5.5] Add support for NetCDF 
-- [5.6] Add support for FASTA/FASTQ 
-- [5.7] Add support for HDF5 
-- [5.8] Add support for SDF 
-- [5.9] Add support for PDB 
-- [5.10] Add support for Numpy 
-- [5.11] Add support for Matlab 
-- [5.12] Add support for GGML 
-- [5.13] Add support for GGUF
-- [5.14] Add support for ONNX
-- [5.15] Add support for Matrix Market
-- [5.16] Add support for PyTorch
+- [5.1] support for JSON 
+- [5.2] support for CSV 
+- [5.3] support for CLI 
+- [5.4] support for Parquet 
+- [5.5] support for NetCDF 
+- [5.6] support for FASTA/FASTQ 
+- [5.7] support for HDF5 
+- [5.8] support for SDF 
+- [5.9] support for PDB 
+- [5.10] support for Numpy 
+- [5.11] support for Matlab 
+- [5.12] support for GGML 
+- [5.13] support for GGUF
+- [5.14] support for ONNX
+- [5.15] support for Matrix Market
+- [5.16] support for PyTorch
