@@ -5,6 +5,15 @@ Linear algebra in your CLI — yayo!
 LAcli runs in your terminal and provides a set of linear algebra commands.
 All operations are performed using [NumPy](https://github.com/numpy/numpy).
 
+### The Problem
+How can be possible to support an huge number of filetype, format and standard without fill the software with useless dependencies for the final user, that in the daily work with only a bunch of filetype ?
+
+#### Hard but cool solution
+To support a very big number of filetype, instead to implement a complete parser or worse a huge library for any filetype, read the raw file, every time you encounter a number, consider that number a part of the matrix or the math object, and after based on the file type, delete the unusefull number, or something like that
+
+#### More easy and pratical solution
+To support a veeery big number of filetype, without fill the software with a huge number of dependencies for parsing files, the program can download the parser in-time at runtime, the fact is that the final user need the be able to work with just a bunch a filetype, so the most of eventual dependencies are useless, so, instead the principle to use only what you need is a good thing, the downside is the time spent in download, but in this case a local cache can be usefull to delimiting the download only to the first time
+
 ---
 
 ### I/O
@@ -62,16 +71,6 @@ Nothing forbids to organize the command accesible feature in sub-commands and so
 | Parquet | `.parquet` | Highly efficient, columnar storage used extensively in data science | NO |
 
 ---
-
-### The Problem
-How can be possible to support an huge number of filetype, format and standard without fill the software with useless dependencies for the final user, that in the daily work with only a bunch of filetype ?
-
-#### Hard but cool solution
-To support a very big number of filetype, instead to implement a complete parser or worse a huge library for any filetype, read the raw file, every time you encounter a number, consider that number a part of the matrix or the math object, and after based on the file type, delete the unusefull number, or something like that
-
-#### More easy and pratical solution
-To support a veeery big number of filetype, without fill the software with a huge number of dependencies for parsing files, the program can download the parser in-time at runtime, the fact is that the final user need the be able to work with just a bunch a filetype, so the most of eventual dependencies are useless, so, instead the principle to use only what you need is a good thing, the downside is the time spent in download, but in this case a local cache can be usefull to delimiting the download only to the first time
-
 
 ## TODO: 
 [1] The first big step for the development of this project is to add the support for a cospicious number of format file, so the user need to be able to compute some basic operation
