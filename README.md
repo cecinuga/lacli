@@ -6,9 +6,9 @@ LAcli runs in your terminal and provides a set of linear algebra commands.
 All operations are performed using [NumPy](https://github.com/numpy/numpy).
 
 ### The Problem
-How can be possible to support an huge number of filetype, format and standard without fill the software with useless dependencies for the final user, that in the daily work with only a bunch of filetype ?
+How can be possible to support an huge number of filetype, format and standard without fill the software with useless dependencies for the final user, given that in the daily work use only a bunch of filetype ?
 
-#### Hard but cool solution
+#### Hard, semi-stupid but cool solution
 To support a very big number of filetype, instead to implement a complete parser or worse a huge library for any filetype, read the raw file, every time you encounter a number, consider that number a part of the matrix or the math object, and after based on the file type, delete the unusefull number, or something like that
 
 #### More easy and pratical solution
