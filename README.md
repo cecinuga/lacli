@@ -27,7 +27,7 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 | Format | Extensions | Description |
 |--------|------------|-------------|
 | Numpy | `.npy`,`.npz` | A simple format for saving numpy arrays to disk with the full information about them
-| MatLab | `.mat` | The official matlab file format to store array and general purpose data
+| Matlab | `.mat` | The official matlab file format to store array and general purpose data
 | HDF5 | `.h5`, `.hdf5` | Hierarchical Data Format. Essential for storing massive, highly complex, and multidimensional datasets |
 | NetCDF | `.nc` | Network Common Data Form. Heavily utilized in atmospheric, oceanic, and meteorological sciences to store array-oriented scientific data |
 
@@ -104,3 +104,4 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 - [5.8] Add support for SDF input and output
 - [5.9] Add support for PDB input and output
 - [5.10] Add support for Numpy input and output
+- [5.11] Add support for Matlab input and output
