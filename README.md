@@ -65,7 +65,10 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 ---
 
 ## TODO: 
-
+[1] The first big step for the development of this project is to add the support for a cospicious number of format file, so you need to be able to compute some basic operation
+[1] Implement the argument parser with the BSO command and some feature to test the file implementation
+[2] Implement support for JSON
+[3] Implement support for CSV
 
 ## Feature
 
