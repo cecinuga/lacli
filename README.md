@@ -26,9 +26,9 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 
 | Format | Extensions | Description |
 |--------|------------|-------------|
+| Numpy | `.npy`,`.npz` | A simple format for saving numpy arrays to disk with the full information about them
 | HDF5 | `.h5`, `.hdf5` | Hierarchical Data Format. Essential for storing massive, highly complex, and multidimensional datasets |
 | NetCDF | `.nc` | Network Common Data Form. Heavily utilized in atmospheric, oceanic, and meteorological sciences to store array-oriented scientific data |
-| Numpy | `.npy`,`.npz` | A simple format for saving numpy arrays to disk with the full information about them
 
 **Bioinformatics & Genomics**
 
@@ -55,7 +55,6 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 ## Roadmap
 
 ### [0] Basic Matrix Operations
-
 - [0.1] matrix mul (arbitrary dimensions)
 - [0.2] matrix add
 - [0.3] matrix scalar mul
@@ -66,7 +65,6 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 - [0.8] add rank compute
 
 ### [1] Checks
-
 - [1.1] add invertability check
 - [1.2] add vectors independence check
 - [1.3] add vectors orthogonality check
@@ -75,11 +73,9 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 - [1.6] add positive definite check
 
 ### [2] Rotations
-
 - [2.1] add rotation matrix computation (input: matrix, angle, [axis], [center], [scale], [shear], [perspective])
 
 ### [3] Factorization
-
 - [3.1] add gauss-jordan elimination
 - [3.2] add LU decomposition
 - [3.3] add LDU decomposition
@@ -90,7 +86,6 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 - [3.8] add eigenvalue decomposition
 
 ### [4] Least Squares
-
 - [4.1] add least squares
 - [4.2] add weighted least squares
 - [4.3] add least squares with regularization
@@ -98,7 +93,6 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 - [4.5] add linear regression
 
 ### [5] I/O Support
-
 - [5.1] Add support for JSON input and output
 - [5.2] Add support for CSV input and output
 - [5.3] Add support for CLI input and output
@@ -108,3 +102,4 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 - [5.7] Add support for HDF5 input and output
 - [5.8] Add support for SDF input and output
 - [5.9] Add support for PDB input and output
+- [5.10] Add support for Numpy input and output
