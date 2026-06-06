@@ -28,7 +28,7 @@ Nothing forbids to organize the command accesible feature in sub-commands and so
 | CSV | `.csv` | NO |
 
 **Multidimensional & Big Data Formats**
-|--------|------------|-------------|-------------|
+
 | Format | Extensions | Description | Supported |
 |--------|------------|-------------|-------------|
 | Numpy | `.npy`,`.npz` | A simple format for saving numpy arrays to disk with the full information about them | NO |
@@ -42,21 +42,21 @@ Nothing forbids to organize the command accesible feature in sub-commands and so
 | ONNX | `.onnx` | ONNX is an open format built to represent machine learning model | NO |
 
 **Bioinformatics & Genomics**
-|--------|------------|-------------|-------------|
+
 | Format | Extensions | Description | Supported |
 |--------|------------|-------------|-------------|
 | FASTA/FASTQ | `.fasta`, `.fastq` | Industry standards for genomic data | NO |
 | BAM/SAM | `.bam`, `.sam` | Compressed binary formats used to store sequence alignments mapped to a reference genome | NO |
 
 **Chemistry & Material Science**
-|--------|------------|-------------|-------------|
+
 | Format | Extensions | Description | Supported |
 |--------|------------|-------------|-------------|
 | PDB | `.pdb` | Protein Data Bank. Used to store 3D structural data for biological macromolecules, such as proteins and nucleic acids | NO |
 | SDF | `.sdf` | Structure Data File. Contains chemical structures and associated tabular or numerical properties | NO |
 
 **Tabular Data & Statistics**
-|--------|------------|-------------|-------------|
+
 | Format | Extensions | Description | Supported |
 |--------|------------|-------------|-------------|
 | Parquet | `.parquet` | Highly efficient, columnar storage used extensively in data science | NO |
