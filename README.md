@@ -30,6 +30,11 @@ Hint: to support a very big number of filetype, instead to implement a complete 
 | Matlab | `.mat` | The official matlab file format to store array and general purpose data
 | HDF5 | `.h5`, `.hdf5` | Hierarchical Data Format. Essential for storing massive, highly complex, and multidimensional datasets |
 | NetCDF | `.nc` | Network Common Data Form. Heavily utilized in atmospheric, oceanic, and meteorological sciences to store array-oriented scientific data |
+| Matrix Market  | `.mtx` | The Matrix Market (MM) exchange formats provide a simple mechanism to facilitate the exchange of matrix data
+| PyTorch | `.pt`, `.pth` | The official PyTorch format to store model weights and architecture
+| GGML | `.ggml` | GGML is an open-source tensor library written in C and C++ designed for running machine learning models  
+| GGUF | `.gguf` | GGUF (GPT-Generated Unified Format) is a highly popular file format designed to store and run large language models (LLMs)
+| ONNX | `.onnx` | ONNX is an open format built to represent machine learning model
 
 **Bioinformatics & Genomics**
 
