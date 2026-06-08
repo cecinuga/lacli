@@ -3,7 +3,7 @@
 Linear algebra in your CLI — yayo!
 
 LAcli runs in your terminal and provides a set of linear algebra commands.
-All operations are performed using [NumPy](https://github.com/numpy/numpy).
+All operations are performed using [NumPy](https://github.com/numpy/numpy). 
 
 ### The Problem
 How can be possible to support an huge number of filetype, format and standard without fill the software with useless dependencies for the final user, given that in the daily work use only a bunch of filetype ?
@@ -15,6 +15,13 @@ To support a very big number of filetype, instead to implement a complete parser
 To support a veeery big number of filetype, without fill the software with a huge number of dependencies for parsing files, the program can download the parser in-time at runtime, the fact is that the final user need the be able to work with just a bunch a filetype, so the most of eventual dependencies are useless, so, instead the principle to use only what you need is a good thing, the downside is the time spent in download, but in this case a local cache can be usefull to delimiting the download only to the first time
 
 ---
+
+### Technology Stack Problem
+Pure Python is too slow, approximatelly 3sec for cicle 10000 numbers, inaceptable counting the opening of the file in memory
+
+#### Change language for file loading and matrix creation
+Go ? C ? C++ ? boh (boh for now)
+
 
 ### I/O
 
