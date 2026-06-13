@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Genera un CSV di numeri casuali.
-# Uso: ./gen_random_csv.sh row=<int> col=<int> type=<int|double> [out=<file>]
+# Generates a CSV of random numbers.
+# Usage: ./gen_random_csv.sh row=<int> col=<int> type=<int|double> [out=<file>]
 
 set -euo pipefail
 
-# -------- 1. Parsing argomenti in formato key=value --------
+# -------- 1. Argument parsing (key=value format) --------
 rows="" cols="" type="" out=""
 
 for arg in "$@"; do
@@ -15,41 +15,41 @@ for arg in "$@"; do
         out=*)  out="${arg#out=}"   ;;
         -h|--help)
             cat <<EOF
-Uso: $0 row=<int> col=<int> type=<int|double> [out=<file>]
+Usage: $0 row=<int> col=<int> type=<int|double> [out=<file>]
 
-  row    numero di righe   (intero positivo)
-  col    numero di colonne (intero positivo)
-  type   int    -> interi in [0, 100)
-         double -> reali  in [0, 1)  con 6 cifre decimali
-  out    file di output (default: stdout)
+  row    number of rows    (positive integer)
+  col    number of columns (positive integer)
+  type   int    -> integers in [0, 100)
+         double -> reals    in [0, 1)  with 6 decimal digits
+  out    output file (default: stdout)
 EOF
             exit 0
             ;;
         *)
-            echo "Errore: argomento non riconosciuto '$arg'" >&2
+            echo "Error: unrecognized argument '$arg'" >&2
             exit 2
             ;;
     esac
 done
 
-# -------- 2. Validazione --------
+# -------- 2. Validation --------
 [[ -n "$rows" && -n "$cols" && -n "$type" ]] \
-    || { echo "Errore: row, col e type sono obbligatori. Usa --help." >&2; exit 2; }
+    || { echo "Error: row, col and type are required. Use --help." >&2; exit 2; }
 
 [[ "$rows" =~ ^[1-9][0-9]*$ ]] \
-    || { echo "Errore: row deve essere un intero positivo (no zero, no segno), ricevuto '$rows'" >&2; exit 2; }
+    || { echo "Error: row must be a positive integer (no zero, no sign), got '$rows'" >&2; exit 2; }
 
 [[ "$cols" =~ ^[1-9][0-9]*$ ]] \
-    || { echo "Errore: col deve essere un intero positivo, ricevuto '$cols'" >&2; exit 2; }
+    || { echo "Error: col must be a positive integer, got '$cols'" >&2; exit 2; }
 
 [[ "$type" == "int" || "$type" == "double" ]] \
-    || { echo "Errore: type deve essere 'int' o 'double', ricevuto '$type'" >&2; exit 2; }
+    || { echo "Error: type must be 'int' or 'double', got '$type'" >&2; exit 2; }
 
-# -------- 3. Generazione (tutto dentro awk, in un solo processo) --------
+# -------- 3. Generation (all inside awk, single process) --------
 generate() {
     awk -v rows="$rows" -v cols="$cols" -v type="$type" '
     BEGIN {
-        srand()                                 # seed = time(NULL); senza, awk userebbe sempre lo stesso seed
+        srand()                                 # seed = time(NULL); without this, awk would always use the same seed
         for (i = 1; i <= rows; i++) {
             line = ""
             for (j = 1; j <= cols; j++) {
@@ -65,10 +65,13 @@ generate() {
     }'
 }
 
-# -------- 4. Output: file se richiesto, altrimenti stdout --------
+# -------- 4. Output: file if requested, otherwise stdout --------
 if [[ -n "$out" ]]; then
+    if [[ ! -f "$out" ]]; then
+        touch "$out"
+    fi
     generate > "$out"
-    echo "Scritto CSV ${rows}x${cols} (${type}) in: $out" >&2
+    echo "Written CSV ${rows}x${cols} (${type}) to: $out" >&2
 else
     generate
 fi
