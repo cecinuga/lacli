@@ -3,9 +3,13 @@
 set -euo pipefail
 
 PYTHON_DIR=$(uv python dir)
-PYTHON_314=cpython-3.14-linux-x86_64-gnu
-PYTHON_314T=cpython-3.14+freethreaded-linux-x86_64-gnu
 
-ls $PYTHON_DIR
+declare -A runtimes
+declare -A benchs
 
-echo $PYTHON_DIR
+keys=(python314 python314t)
+
+runtimes[python314]=$LACLI_BENCH_PYTHON_314
+runtimes[python314t]=$LACLI_BENCH_PYTHON_314T
+benchs[python314]=./load_bench/314.py
+benchs[python314t]=./load_bench/314t.py
