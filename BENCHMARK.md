@@ -4,10 +4,10 @@
 To reproduce the benchmarks do this:
 - The user need to have installed on his machine the languages listed in `Programming Language support` section
 - The user need to set this environment variables: 
-  - `LACLI_BENCH_PYTHON_314` (path to the Python 3.14 executable)
-  - `LACLI_BENCH_PYTHON_314T` (path to the Python 3.14 free-threaded executable)
-  - `LACLI_BENCH_GO` (path to the Go executable)
-  - `LACLI_BENCH_RUST` (path to the Rust executable)
+  - `export LACLI_BENCH_PYTHON_314`=(path to the Python 3.14 executable)
+  - `export LACLI_BENCH_PYTHON_314T`=(path to the Python 3.14 free-threaded executable)
+  - `export LACLI_BENCH_GO_125`=(path to the Go executable)
+  - `export LACLI_BENCH_RUST_195`=(path to the Rust executable)
 - `./run.sh` the benchmark script and view the results in stout
 
 ## Programming Language support
