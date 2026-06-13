@@ -12,7 +12,7 @@ How can be possible to support an huge number of filetype, format and standard w
 To support a very big number of filetype, instead to implement a complete parser or worse a huge library for any filetype, read the raw file, every time you encounter a number, consider that number a part of the matrix or the math object, and after based on the file type, delete the unusefull number, or something like that
 
 #### More easy and pratical solution
-To support a veeery big number of filetype, without fill the software with a huge number of dependencies for parsing files, the program can download the parser in-time at runtime, the fact is that the final user need the be able to work with just a bunch a filetype, so the most of eventual dependencies are useless, so, instead the principle to use only what you need is a good thing, the downside is the time spent in download, but in this case a local cache can be usefull to delimiting the download only to the first time
+To support a veeery big number of filetype, without fill the software with a huge number of dependencies for parsing files, the program can download the load matrix dependency, the fact is that the final user need the be able to work with just a bunch a filetype, so the most of eventual dependencies are useless, so, instead the principle to use only what you need is a good thing, the downside is the time spent in download, but in this case a local cache can be usefull to delimiting the download only to the first time
 
 ---
 
