@@ -21,5 +21,5 @@ Every benchmark are run for:
 - CSV
 (is really needed ?)
 
-### File loading
+## File loading
 The benchmark files are in `benches/load_bench`, they misure the how long it takes to load a file from disk to memory and prepare it for processing with LAcli commands, they are written in various languages for comparison to have a critical pov for choosing the right language for LAcli.
