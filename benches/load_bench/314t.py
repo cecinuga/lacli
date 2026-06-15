@@ -16,12 +16,32 @@ def read_chunks(fd, index, size) -> ResultInfo:
     raw = os.pread(fd, size, offset)
 
     info = ResultInfo() # parse numbers and newline, newline is counted to determine row count
-    def parse(raw):
+
+    number_state = ''
+    def parse_number(c: int):
+        nonlocal number_state
+        if (c >= 48 and c <= 57) or c == 46 or c == 45 or c == 43:
+            number_state += chr(c)
+            return None
+        else:
+            completed = number_state
+            number_state = ''
+            return completed
+
+
+    def parse_newline(c):
         return
 
-    print(raw)
-    return info
+    for c in raw:
+        number = parse_number(c)
+        if number:
+            info.data.append(number)
+        parse_newline(c)
 
+    print(info.data)
+    print(raw)
+    print('---------------------------')
+    return info
 
 """
 Every line is intended to be an array of the matrix.
