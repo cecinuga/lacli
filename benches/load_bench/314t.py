@@ -5,24 +5,11 @@ import sys
 print(sys.version)              # must contain "free-threaded build"
 print(f"is gil enabled: {sys._is_gil_enabled()}\n")
 
-class ResultInfo:
-    def __init__(self):
-        self.row = 0
-        self.data = []
-
-def read_chunks(fd, index, size) -> ResultInfo:
-    offset = index*size
-    #print(f"thread number: {index} --- size {size} at offset {offset}")
-    raw = os.pread(fd, size, offset)
-
-    info = ResultInfo() # parse numbers and newline, newline is counted to determine row count
-
-
-    # CREARE UNA CLOJURE PORTATILE!
+def parse_number():
     empty = True
     decimal = False
     number_state = ''
-    def parse_number(c: int):
+    def parser(c: int) -> str | None:
         nonlocal empty
         nonlocal decimal
         nonlocal number_state
@@ -43,6 +30,7 @@ def read_chunks(fd, index, size) -> ResultInfo:
             case 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57: # digits
                 number_state += chr(c)
                 empty = False
+                return None
 
             case 46: # full_stop
                 # state not permitted, so i return the accumulated number
@@ -55,6 +43,7 @@ def read_chunks(fd, index, size) -> ResultInfo:
 
                 decimal = True
                 number_state += chr(c)
+                return None
 
             case _:
                 empty = True
@@ -62,16 +51,32 @@ def read_chunks(fd, index, size) -> ResultInfo:
                 completed = number_state
                 number_state = ''
                 return completed
+    return parser
 
+
+class ResultInfo:
+    def __init__(self):
+        self.row = 0
+        self.data = []
+
+def read_chunks(fd, index, size) -> ResultInfo:
+    offset = index*size
+    #print(f"thread number: {index} --- size {size} at offset {offset}")
+    raw = os.pread(fd, size, offset)
+
+    info = ResultInfo() # parse numbers and newline, newline is counted to determine row count
 
     def parse_newline(c):
         return
 
+    parse_number_fn = parse_number()
+    raw = raw + b'W' # for parsing the last number
     for c in raw:
-        number = parse_number(c)
+        number = parse_number_fn(c)
         if number:
             info.data.append(number)
         parse_newline(c)
+
 
     print(info.data)
     print(raw)
