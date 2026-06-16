@@ -17,16 +17,51 @@ def read_chunks(fd, index, size) -> ResultInfo:
 
     info = ResultInfo() # parse numbers and newline, newline is counted to determine row count
 
+
+    # CREARE UNA CLOJURE PORTATILE!
+    empty = True
+    decimal = False
     number_state = ''
     def parse_number(c: int):
+        nonlocal empty
+        nonlocal decimal
         nonlocal number_state
-        if (c >= 48 and c <= 57) or c == 46 or c == 45 or c == 43:
-            number_state += chr(c)
-            return None
-        else:
-            completed = number_state
-            number_state = ''
-            return completed
+
+        match c:
+            case 45 | 43: # minus or plus
+                if empty:
+                    number_state += chr(c)
+                    empty = False
+                    return None
+                else: # state not permitted, so i return the accumulated number
+                    empty = True
+                    decimal = False
+                    completed = number_state
+                    number_state = ''
+                    return completed
+
+            case 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57: # digits
+                number_state += chr(c)
+                empty = False
+
+            case 46: # full_stop
+                # state not permitted, so i return the accumulated number
+                if empty or decimal:
+                    empty = True
+                    decimal = False
+                    completed = number_state
+                    number_state = ''
+                    return completed
+
+                decimal = True
+                number_state += chr(c)
+
+            case _:
+                empty = True
+                decimal = False
+                completed = number_state
+                number_state = ''
+                return completed
 
 
     def parse_newline(c):
