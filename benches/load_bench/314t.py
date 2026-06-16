@@ -5,7 +5,12 @@ import sys
 print(sys.version)              # must contain "free-threaded build"
 print(f"is gil enabled: {sys._is_gil_enabled()}\n")
 
-def parse_number():
+class ResultInfo:
+    def __init__(self):
+        self.row = 0
+        self.data = []
+
+def parse_number_fct():
     empty = True
     decimal = False
     number_state = ''
@@ -53,11 +58,11 @@ def parse_number():
                 return completed
     return parser
 
+def parser_newline_fct(): # CONTINUE WITH PARSER FOR NEWLINE CHARACTER
+    def parser(c: int) -> str | None:
+        return None
 
-class ResultInfo:
-    def __init__(self):
-        self.row = 0
-        self.data = []
+    return parser
 
 def read_chunks(fd, index, size) -> ResultInfo:
     offset = index*size
@@ -66,16 +71,15 @@ def read_chunks(fd, index, size) -> ResultInfo:
 
     info = ResultInfo() # parse numbers and newline, newline is counted to determine row count
 
-    def parse_newline(c):
-        return
+    parse_number = parse_number_fct()
+    parser_newline = parser_newline_fct()
 
-    parse_number_fn = parse_number()
     raw = raw + b'W' # for parsing the last number
     for c in raw:
-        number = parse_number_fn(c)
+        number = parse_number(c)
         if number:
             info.data.append(number)
-        parse_newline(c)
+        parser_newline()
 
 
     print(info.data)
