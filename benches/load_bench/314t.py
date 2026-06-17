@@ -11,29 +11,29 @@ class ResultInfo:
         self.data = []
 
 def parse_number_fct():
+    state = ''
     empty = True
     decimal = False
-    number_state = ''
     def parser(c: int) -> str | None:
+        nonlocal state
         nonlocal empty
         nonlocal decimal
-        nonlocal number_state
 
         match c:
             case 45 | 43: # minus or plus
                 if empty:
-                    number_state += chr(c)
+                    state += chr(c)
                     empty = False
                     return None
                 else: # state not permitted, so i return the accumulated number
                     empty = True
                     decimal = False
-                    completed = number_state
-                    number_state = ''
+                    completed = state
+                    state = ''
                     return completed
 
             case 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57: # digits
-                number_state += chr(c)
+                state += chr(c)
                 empty = False
                 return None
 
@@ -42,25 +42,50 @@ def parse_number_fct():
                 if empty or decimal:
                     empty = True
                     decimal = False
-                    completed = number_state
-                    number_state = ''
+                    completed = state
+                    state = ''
                     return completed
 
                 decimal = True
-                number_state += chr(c)
+                state += chr(c)
                 return None
 
             case _:
                 empty = True
                 decimal = False
-                completed = number_state
-                number_state = ''
+                completed = state
+                state = ''
                 return completed
     return parser
 
 def parser_newline_fct(): # CONTINUE WITH PARSER FOR NEWLINE CHARACTER
+    state = ''
+    empty = True
     def parser(c: int) -> str | None:
-        return None
+        nonlocal state
+        nonlocal empty
+
+        match c:
+            case b'5C': # \
+                if empty:
+                    state += chr(c)
+                    empty = False
+                    return None
+                return None
+            case b'6E': # n
+                if not empty:
+                    state += chr(c)
+                    complete = state
+                    state = ''
+                    empty = True
+                    return complete
+                return None
+            case _:
+                if len(state) == 2:
+                    complete = state
+                    state = ''
+                    empty = True
+                    return complete
 
     return parser
 
@@ -79,7 +104,7 @@ def read_chunks(fd, index, size) -> ResultInfo:
         number = parse_number(c)
         if number:
             info.data.append(number)
-        parser_newline()
+        #parser_newline()
 
 
     print(info.data)
