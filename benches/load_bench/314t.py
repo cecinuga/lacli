@@ -7,7 +7,7 @@ print(f"is gil enabled: {sys._is_gil_enabled()}\n")
 
 class ResultInfo:
     def __init__(self):
-        self.row = 0
+        self.row_count = 0
         self.data = []
 
 def parse_number_fct():
@@ -58,37 +58,6 @@ def parse_number_fct():
                 return completed
     return parser
 
-def parser_newline_fct(): # CONTINUE WITH PARSER FOR NEWLINE CHARACTER
-    state = ''
-    empty = True
-    def parser(c: int) -> str | None:
-        nonlocal state
-        nonlocal empty
-
-        match c:
-            case b'5C': # \
-                if empty:
-                    state += chr(c)
-                    empty = False
-                    return None
-                return None
-            case b'6E': # n
-                if not empty:
-                    state += chr(c)
-                    complete = state
-                    state = ''
-                    empty = True
-                    return complete
-                return None
-            case _:
-                if len(state) == 2:
-                    complete = state
-                    state = ''
-                    empty = True
-                    return complete
-
-    return parser
-
 def read_chunks(fd, index, size) -> ResultInfo:
     offset = index*size
     #print(f"thread number: {index} --- size {size} at offset {offset}")
@@ -97,16 +66,18 @@ def read_chunks(fd, index, size) -> ResultInfo:
     info = ResultInfo() # parse numbers and newline, newline is counted to determine row count
 
     parse_number = parse_number_fct()
-    parser_newline = parser_newline_fct()
 
     raw = raw + b'W' # for parsing the last number
     for c in raw:
+        if c == 10:
+            info.row_count += 1
+
         number = parse_number(c)
         if number:
             info.data.append(number)
-        #parser_newline()
 
 
+    print(info.row_count)
     print(info.data)
     print(raw)
     print('---------------------------')
