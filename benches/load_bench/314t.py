@@ -7,7 +7,9 @@ print(f"is gil enabled: {sys._is_gil_enabled()}\n")
 
 class ResultInfo:
     def __init__(self):
+        self.col_count = 0
         self.row_count = 0
+        self.new_lines_pos = []
         self.data = []
 
 class NumberLexer:
@@ -53,10 +55,12 @@ def read_chunks(fd, index, size) -> ResultInfo:
 
     info = ResultInfo()
     lexer = NumberLexer()
-
     for c in raw:
-        if c == 10:
+        if c == 10: # new line
             info.row_count += 1
+            info.new_lines_pos.append(len(info.data))
+        if c == 44: # comma
+            info.col_count += 1
 
         number = lexer.feed(c)
         if number:
@@ -65,10 +69,7 @@ def read_chunks(fd, index, size) -> ResultInfo:
     last = lexer.flush()
     if last:
         info.data.append(last)
-
-    print(info.data)
     print(raw)
-    print('---------------------------')
     return info
 
 """
@@ -90,10 +91,20 @@ if __name__ == '__main__':
     print(f"num thread: {n_thread}")
     print(f"size: {size}, chunk size: {chunk_size}, chunk rest: {chunk_rest}\n")
 
+    merged_results = ResultInfo()
     try:
-        with ThreadPoolExecutor(max_workers=n_thread) as pool:
+        with ThreadPoolExecutor(max_workers=n_thread+1) as pool:
             results = list(pool.map(lambda i: read_chunks(fd, i, chunk_size), range(n_thread)))
+
+        results.append(read_chunks(fd, n_thread, chunk_size))
     finally:
         os.close(fd)
 
-    print(results)
+    for res in results:
+        merged_results.data.append(res.data)
+        merged_results.row_count += res.row_count
+        print(res.new_lines_pos)
+
+
+    print(f"col count: {merged_results.col_count}, row count: {merged_results.row_count}")
+    print(merged_results.data)
