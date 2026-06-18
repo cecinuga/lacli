@@ -10,74 +10,62 @@ class ResultInfo:
         self.row_count = 0
         self.data = []
 
-def parse_number_fct():
-    state = ''
-    empty = True
-    decimal = False
-    def parser(c: int) -> str | None:
-        nonlocal state
-        nonlocal empty
-        nonlocal decimal
+class NumberLexer:
+    DIGITS = set("0123456789")
+    SIGNS  = set("+-")
+    DOT    = "."
 
-        match c:
-            case 45 | 43: # minus or plus
-                if empty:
-                    state += chr(c)
-                    empty = False
-                    return None
-                else: # state not permitted, so i return the accumulated number
-                    empty = True
-                    decimal = False
-                    completed = state
-                    state = ''
-                    return completed
+    def __init__(self):
+        self._buf = []
+        self._has_dot = False
 
-            case 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57: # digits
-                state += chr(c)
-                empty = False
-                return None
+    def feed(self, x: int) -> str | None:
+        c = chr(x)
+        if c in self.DIGITS:
+            self._buf.append(c)
+            return None
+        if c in self.SIGNS and not self._buf:
+            self._buf.append(c)
+            return None
+        if c == self.DOT and self._buf and not self._has_dot:
+            self._buf.append(c)
+            self._has_dot = True
+            return None
+        return self._flush()
 
-            case 46: # full_stop
-                # state not permitted, so i return the accumulated number
-                if empty or decimal:
-                    empty = True
-                    decimal = False
-                    completed = state
-                    state = ''
-                    return completed
+    def flush(self) -> str | None:
+        return self._flush()
 
-                decimal = True
-                state += chr(c)
-                return None
-
-            case _:
-                empty = True
-                decimal = False
-                completed = state
-                state = ''
-                return completed
-    return parser
+    def _flush(self) -> str | None:
+        if not self._buf:
+            return None
+        s = "".join(self._buf)
+        self._buf.clear()
+        self._has_dot = False
+        if not any(ch.isdigit() for ch in s):
+            return None
+        return s
 
 def read_chunks(fd, index, size) -> ResultInfo:
     offset = index*size
     #print(f"thread number: {index} --- size {size} at offset {offset}")
     raw = os.pread(fd, size, offset)
 
-    info = ResultInfo() # parse numbers and newline, newline is counted to determine row count
+    info = ResultInfo()
+    lexer = NumberLexer()
 
-    parse_number = parse_number_fct()
-
-    raw = raw + b'W' # for parsing the last number
     for c in raw:
         if c == 10:
             info.row_count += 1
 
-        number = parse_number(c)
+        number = lexer.feed(c)
         if number:
             info.data.append(number)
 
+    last = lexer.flush()
+    if last:
+        info.data.append(last)
 
-    print(info.row_count)
     print(info.data)
     print(raw)
     print('---------------------------')
