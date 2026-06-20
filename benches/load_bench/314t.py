@@ -2,17 +2,25 @@ from concurrent.futures import ThreadPoolExecutor
 import os
 import sys
 
-print(sys.version)              # must contain "free-threaded build"
+print(sys.version)                      # must contain "free-threaded build"
 print(f"is gil enabled: {sys._is_gil_enabled()}\n")
 
-class ResultInfo:
+class ChunkInfo:
+    """Parsed output of a single file chunk: extracted numbers and boundary flags used during merge."""
     def __init__(self):
-        self.col_count = 0
-        self.row_count = 0
-        self.new_lines_pos = []
+        self.newline_num = 0
+        self.is_first_newline = False   # True if the chunk starts with '\n' (no leading truncated token)
+        self.is_last_truncated = False  # True if the last token was cut at the chunk boundary
         self.data = []
 
 class NumberLexer:
+    """
+    Streaming byte-level tokenizer that emits numeric strings (integer or float) from raw bytes.
+
+    Accumulates characters into a buffer and flushes a complete token when a non-numeric
+    delimiter is encountered. Accepts an optional leading sign, at most one decimal point,
+    and rejects buffers that contain no digit (e.g. a bare '+').
+    """
     DIGITS = set("0123456789")
     SIGNS  = set("+-")
     DOT    = "."
@@ -22,23 +30,28 @@ class NumberLexer:
         self._has_dot = False
 
     def feed(self, x: int) -> str | None:
+        """Feed one byte value; return a complete token string when a delimiter is hit, else None."""
         c = chr(x)
         if c in self.DIGITS:
             self._buf.append(c)
             return None
         if c in self.SIGNS and not self._buf:
+            # accept sign only at the start of a number
             self._buf.append(c)
             return None
         if c == self.DOT and self._buf and not self._has_dot:
+            # accept the first decimal point inside a number
             self._buf.append(c)
             self._has_dot = True
             return None
         return self._flush()
 
     def flush(self) -> str | None:
+        """Emit any token still in the buffer; call at end-of-stream to capture the last number."""
         return self._flush()
 
     def _flush(self) -> str | None:
+        """Drain the buffer; return the accumulated string only if it contains at least one digit."""
         if not self._buf:
             return None
         s = "".join(self._buf)
@@ -48,19 +61,23 @@ class NumberLexer:
             return None
         return s
 
-def read_chunks(fd, index, size) -> ResultInfo:
+def read_chunks(fd, index, size) -> ChunkInfo:
+    """
+    Read `size` bytes at byte offset `index * size` from `fd` using pread (thread-safe, no seek).
+    Lex all numeric tokens in the slice and record newline count and boundary conditions.
+    """
     offset = index*size
     #print(f"thread number: {index} --- size {size} at offset {offset}")
     raw = os.pread(fd, size, offset)
 
-    info = ResultInfo()
+    info = ChunkInfo()
     lexer = NumberLexer()
+
+    if raw[0] == 10:
+        info.is_first_newline = True
     for c in raw:
         if c == 10: # new line
-            info.row_count += 1
-            info.new_lines_pos.append(len(info.data))
-        if c == 44: # comma
-            info.col_count += 1
+            info.newline_num += 1
 
         number = lexer.feed(c)
         if number:
@@ -69,6 +86,7 @@ def read_chunks(fd, index, size) -> ResultInfo:
     last = lexer.flush()
     if last:
         info.data.append(last)
+        info.is_last_truncated = True  # token was cut at the chunk boundary; must be joined with next chunk
     print(raw)
     return info
 
@@ -91,20 +109,28 @@ if __name__ == '__main__':
     print(f"num thread: {n_thread}")
     print(f"size: {size}, chunk size: {chunk_size}, chunk rest: {chunk_rest}\n")
 
-    merged_results = ResultInfo()
+    merged_results = ChunkInfo()
     try:
         with ThreadPoolExecutor(max_workers=n_thread+1) as pool:
             results = list(pool.map(lambda i: read_chunks(fd, i, chunk_size), range(n_thread)))
 
+        # read the remainder bytes (size % n_thread) that were not covered by the equal-sized chunks
         results.append(read_chunks(fd, n_thread, chunk_size))
     finally:
         os.close(fd)
 
-    for res in results:
+    # stitch tokens split across chunk boundaries:
+    # if chunk i ends mid-number and chunk i+1 does not start on a newline,
+    # the tail of chunk i and the head of chunk i+1 form a single token
+    for i, res in enumerate(results):
+        if i < len(results) and res.is_last_truncated and not results[i+1].is_first_newline:
+            res.data[-1] += results[i+1].data[0]
+            results[i+1].data.pop(0)
+            pass
         merged_results.data.append(res.data)
-        merged_results.row_count += res.row_count
-        print(res.new_lines_pos)
+        merged_results.newline_num += res.newline_num
 
 
-    print(f"col count: {merged_results.col_count}, row count: {merged_results.row_count}")
+
+    #print(f"col count: {merged_results.col_count}, row count: {merged_results.row_count}")
     print(merged_results.data)
