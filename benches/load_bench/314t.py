@@ -153,13 +153,16 @@ def reconstruct(chunks: list[ChunkMetadata], max_threads:int) -> Matrix:
         with ThreadPoolExecutor(max_workers=max_threads+1) as pool:
             mx = max(matrix.rows, max_threads)
             chunk_threads = min(matrix.rows, max_threads)
-            stop = mx//chunk_threads
-
-            for _ in range(stop):
-                pool.map(lambda i: arr_str_float(matrix.data[i]), range(chunk_threads))
+            stop = (mx//chunk_threads)+1
+            print(stop, chunk_threads)
+            for j in range(stop):
+                if j == stop-1:
+                    chunk_threads = mx%chunk_threads # BUGBUGUGUGUGUGU
+                pool.map(lambda i: arr_str_float(matrix.data[i+j]), range(chunk_threads))
     finally:
         pass
     return matrix
+
 
 """
 Every line is intended to be an array of the matrix.
@@ -167,8 +170,10 @@ To load the matrix, as many threads as there are CPU cores are spawned, the file
 """
 if __name__ == '__main__':
     file = sys.argv[1] # file path
-
     n_thread = os.cpu_count()
+    if len(sys.argv) == 3:
+        n_thread = int(sys.argv[2])
+
     if n_thread == None:
         raise ValueError('os.cpu_count() return None')
 
