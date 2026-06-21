@@ -3,7 +3,6 @@ import os
 import sys
 
 print(sys.version)                      # must contain "free-threaded build"
-print(f"is gil enabled: {sys._is_gil_enabled()}\n")
 
 class ChunkMetadata:
     """Parsed output of a single file chunk: extracted numbers and boundary flags used during merge."""
@@ -94,7 +93,7 @@ def read_chunks(fd, index, size) -> ChunkMetadata:
     if last:
         info.data.append(last)
         info.is_last_truncated = True  # token was cut at the chunk boundary; must be joined with next chunk
-    print(raw)
+    #print(raw)
     return info
 
 def recostruct_matrix(chunks: list[ChunkMetadata]) -> Matrix:
@@ -114,21 +113,36 @@ def recostruct_matrix(chunks: list[ChunkMetadata]) -> Matrix:
     matrix.cols = matrix.nums // matrix.rows
     matrix.data.extend([] for _ in range(matrix.rows - len(matrix.data)))
 
-    print(len(matrix.data))
-    print(matrix.data)
-    print('--------------------------------------------------------------------')
-    for i in range(len(matrix.data)):
-        if i+1 < len(matrix.data) and len(matrix.data[i]) > matrix.cols:
-            remainders = matrix.data[i][matrix.cols:]
-            matrix.data[i+1][:0] = remainders
-            matrix.data[i] = matrix.data[i][:matrix.cols]
+    #print(len(matrix.data))
+    #print(matrix.data)
+    #print('--------------------------------------------------------------------')
+    actual_matrix_length = len(matrix.data)
+    i = 0
+    while i < actual_matrix_length-1:
+        curr = i
+        next = i+1
+        print("before:")
+        print(f"curr={matrix.data[curr]}")
+        print(f"next={matrix.data[next]}")
+        print('-----------------------------------------------')
+        if i+1 < len(matrix.data) and len(matrix.data[curr]) > matrix.cols:
+            remainders = matrix.data[curr][matrix.cols:]
+            matrix.data[next][:0] = remainders
+            matrix.data[curr] = matrix.data[curr][:matrix.cols]
 
-        if i+1 < len(matrix.data) and len(matrix.data[i]) < matrix.cols:
-            resize_index = matrix.cols-len(matrix.data[i])
-            missings = matrix.data[i+1][:resize_index]
-            matrix.data[i][len(matrix.data[i]):] = missings
-            matrix.data[i+1] = matrix.data[i+1][resize_index:]
-
+        if i+1 < len(matrix.data) and len(matrix.data[curr]) < matrix.cols:
+            resize_index = matrix.cols-len(matrix.data[curr])
+            missings = matrix.data[next][:resize_index]
+            matrix.data[curr][len(matrix.data[curr]):] = missings
+            matrix.data[next] = matrix.data[next][resize_index:]
+        print("after:")
+        print(f"curr={matrix.data[curr]}")
+        print(f"next={matrix.data[next]}")
+        print('-----------------------------------------------')
+        if not matrix.data[next]:
+            matrix.data.pop(next)
+            actual_matrix_length -= 1
+        i+=1
     return matrix
 
 """
