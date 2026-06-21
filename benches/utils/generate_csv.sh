@@ -19,8 +19,9 @@ Usage: $0 row=<int> col=<int> type=<int|double> [out=<file>]
 
   row    number of rows    (positive integer)
   col    number of columns (positive integer)
-  type   int    -> integers in [0, 100)
-         double -> reals    in [0, 1)  with 6 decimal digits
+  type   int    -> integers, randomly positive or negative, magnitude in [0, 100)
+         double -> reals with random precision (1-10 decimal digits),
+                   randomly chosen as: positive [1, 10001), negative (-10001, -1], or fractional [0, 1)
   out    output file (default: stdout)
 EOF
             exit 0
@@ -54,9 +55,17 @@ generate() {
             line = ""
             for (j = 1; j <= cols; j++) {
                 if (type == "int") {
-                    val = int(rand() * 100)     # rand() in [0,1)  ->  int*100 in [0,99]
+                    sign = (int(rand() * 2) == 0) ? 1 : -1
+                    val  = sign * int(rand() * 100)
                 } else {
-                    val = sprintf("%.6f", rand())
+                    prec     = int(rand() * 10) + 1     # 1..10 decimal digits
+                    category = int(rand() * 3)           # 0=positive, 1=negative, 2=fractional
+                    if (category == 0)
+                        val = sprintf("%.*f", prec, rand() * 10000 + 1)
+                    else if (category == 1)
+                        val = sprintf("%.*f", prec, -(rand() * 10000 + 1))
+                    else
+                        val = sprintf("%.*f", prec, rand())
                 }
                 line = (j == 1) ? val : line "," val
             }
