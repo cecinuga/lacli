@@ -113,18 +113,11 @@ def recostruct_matrix(chunks: list[ChunkMetadata]) -> Matrix:
     matrix.cols = matrix.nums // matrix.rows
     matrix.data.extend([] for _ in range(matrix.rows - len(matrix.data)))
 
-    #print(len(matrix.data))
-    #print(matrix.data)
-    #print('--------------------------------------------------------------------')
     actual_matrix_length = len(matrix.data)
     i = 0
     while i < actual_matrix_length-1:
         curr = i
         next = i+1
-        print("before:")
-        print(f"curr={matrix.data[curr]}")
-        print(f"next={matrix.data[next]}")
-        print('-----------------------------------------------')
         if i+1 < len(matrix.data) and len(matrix.data[curr]) > matrix.cols:
             remainders = matrix.data[curr][matrix.cols:]
             matrix.data[next][:0] = remainders
@@ -135,20 +128,21 @@ def recostruct_matrix(chunks: list[ChunkMetadata]) -> Matrix:
             missings = matrix.data[next][:resize_index]
             matrix.data[curr][len(matrix.data[curr]):] = missings
             matrix.data[next] = matrix.data[next][resize_index:]
-        print("after:")
-        print(f"curr={matrix.data[curr]}")
-        print(f"next={matrix.data[next]}")
-        print('-----------------------------------------------')
+
         if not matrix.data[next]:
             matrix.data.pop(next)
             actual_matrix_length -= 1
-        i+=1
+
+        if len(matrix.data[curr]) == matrix.cols:
+            i+=1
     return matrix
 
 """
 Every line is intended to be an array of the matrix.
 To load the matrix, as many threads as there are CPU cores are spawned, the file is chunked and each thread loads a chunk of the matrix.
 """
+
+
 if __name__ == '__main__':
     file = sys.argv[1] # file path
 
