@@ -5,12 +5,19 @@ import sys
 print(sys.version)                      # must contain "free-threaded build"
 print(f"is gil enabled: {sys._is_gil_enabled()}\n")
 
-class ChunkInfo:
+class ChunkMetadata:
     """Parsed output of a single file chunk: extracted numbers and boundary flags used during merge."""
     def __init__(self):
         self.newline_num = 0
-        self.is_first_newline = False   # True if the chunk starts with '\n' (no leading truncated token)
+        self.is_first_stop = False   # True if the chunk starts with '\n' (no leading truncated token)
         self.is_last_truncated = False  # True if the last token was cut at the chunk boundary
+        self.data: list[str] = []
+
+class Matrix:
+    def __init__(self):
+        self.cols = 0
+        self.rows = 0
+        self.nums = 0
         self.data = []
 
 class NumberLexer:
@@ -61,7 +68,7 @@ class NumberLexer:
             return None
         return s
 
-def read_chunks(fd, index, size) -> ChunkInfo:
+def read_chunks(fd, index, size) -> ChunkMetadata:
     """
     Read `size` bytes at byte offset `index * size` from `fd` using pread (thread-safe, no seek).
     Lex all numeric tokens in the slice and record newline count and boundary conditions.
@@ -70,11 +77,11 @@ def read_chunks(fd, index, size) -> ChunkInfo:
     #print(f"thread number: {index} --- size {size} at offset {offset}")
     raw = os.pread(fd, size, offset)
 
-    info = ChunkInfo()
+    info = ChunkMetadata()
     lexer = NumberLexer()
 
-    if raw[0] == 10:
-        info.is_first_newline = True
+    if raw and (raw[0] == 10 or raw[0] == 44):
+        info.is_first_stop = True
     for c in raw:
         if c == 10: # new line
             info.newline_num += 1
@@ -89,6 +96,40 @@ def read_chunks(fd, index, size) -> ChunkInfo:
         info.is_last_truncated = True  # token was cut at the chunk boundary; must be joined with next chunk
     print(raw)
     return info
+
+def recostruct_matrix(chunks: list[ChunkMetadata]) -> Matrix:
+    matrix = Matrix()
+
+    # stitch tokens split across chunk boundaries:
+    # if chunk i ends mid-number and chunk i+1 does not start on a newline,
+    # the tail of chunk i and the head of chunk i+1 form a single token
+    for i, chunk in enumerate(chunks):
+        if i+1 < len(chunks) and chunk.is_last_truncated and not chunks[i+1].is_first_stop:
+            chunk.data[-1] += chunks[i+1].data[0]
+            chunks[i+1].data.pop(0)
+
+        matrix.nums += len(chunk.data)
+        matrix.data.append(chunk.data)
+        matrix.rows += chunk.newline_num
+    matrix.cols = matrix.nums // matrix.rows
+    matrix.data.extend([] for _ in range(matrix.rows - len(matrix.data)))
+
+    print(len(matrix.data))
+    print(matrix.data)
+    print('--------------------------------------------------------------------')
+    for i in range(len(matrix.data)):
+        if i+1 < len(matrix.data) and len(matrix.data[i]) > matrix.cols:
+            remainders = matrix.data[i][matrix.cols:]
+            matrix.data[i+1][:0] = remainders
+            matrix.data[i] = matrix.data[i][:matrix.cols]
+
+        if i+1 < len(matrix.data) and len(matrix.data[i]) < matrix.cols:
+            resize_index = matrix.cols-len(matrix.data[i])
+            missings = matrix.data[i+1][:resize_index]
+            matrix.data[i][len(matrix.data[i]):] = missings
+            matrix.data[i+1] = matrix.data[i+1][resize_index:]
+
+    return matrix
 
 """
 Every line is intended to be an array of the matrix.
@@ -109,28 +150,17 @@ if __name__ == '__main__':
     print(f"num thread: {n_thread}")
     print(f"size: {size}, chunk size: {chunk_size}, chunk rest: {chunk_rest}\n")
 
-    merged_results = ChunkInfo()
+    merged_results = ChunkMetadata()
     try:
         with ThreadPoolExecutor(max_workers=n_thread+1) as pool:
-            results = list(pool.map(lambda i: read_chunks(fd, i, chunk_size), range(n_thread)))
+            chunks_metas = list(pool.map(lambda i: read_chunks(fd, i, chunk_size), range(n_thread)))
 
         # read the remainder bytes (size % n_thread) that were not covered by the equal-sized chunks
-        results.append(read_chunks(fd, n_thread, chunk_size))
+        chunks_metas.append(read_chunks(fd, n_thread, chunk_size))
     finally:
         os.close(fd)
 
-    # stitch tokens split across chunk boundaries:
-    # if chunk i ends mid-number and chunk i+1 does not start on a newline,
-    # the tail of chunk i and the head of chunk i+1 form a single token
-    for i, res in enumerate(results):
-        if i < len(results) and res.is_last_truncated and not results[i+1].is_first_newline:
-            res.data[-1] += results[i+1].data[0]
-            results[i+1].data.pop(0)
-            pass
-        merged_results.data.append(res.data)
-        merged_results.newline_num += res.newline_num
+    matrix = recostruct_matrix(chunks_metas)
 
-
-
-    #print(f"col count: {merged_results.col_count}, row count: {merged_results.row_count}")
-    print(merged_results.data)
+    print(matrix.data)
+    print(f"col count: {matrix.cols}, row count: {matrix.rows}, total nums: {matrix.nums}")
