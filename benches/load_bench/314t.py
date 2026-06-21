@@ -131,38 +131,32 @@ def realignment(matrix: Matrix) -> Matrix:
             matrix.data[curr][len(matrix.data[curr]):] = missings
             matrix.data[next] = matrix.data[next][resize_index:]
 
+        if len(matrix.data[curr]) == matrix.cols:
+            i+=1
+
         if not matrix.data[next]:
             matrix.data.pop(next)
             actual_matrix_length -= 1
-
-        if len(matrix.data[curr]) == matrix.cols:
-            i+=1
+    if not matrix.data[-1]:
+        matrix.data.pop()
     return matrix
 
+def arr_str_float(arr: list):
+    for i in range(len(arr)):
+        arr[i] = float(arr[i])
+    return arr
 
-
-
-
-
-
-
-
-
-
-def conv_str_float(arr: list[str]) -> list[float]:
-    try:
-        res: list[float] = [float(num) for num in arr]
-    except:
-        pass
-    return res
-
-def reconstruct(chunks: list[ChunkMetadata], n_thread:int) -> Matrix:
+def reconstruct(chunks: list[ChunkMetadata], max_threads:int) -> Matrix:
     matrix = reconstruct_numbers(chunks)
     matrix = realignment(matrix)
     try:
-        pass
-        with ThreadPoolExecutor(max_workers=n_thread+1) as pool:
-            matrix.data = list(pool.map(lambda i: conv_str_float(matrix.data[i]), range(matrix.rows)))
+        with ThreadPoolExecutor(max_workers=max_threads+1) as pool:
+            mx = max(matrix.rows, max_threads)
+            chunk_threads = min(matrix.rows, max_threads)
+            stop = mx//chunk_threads
+
+            for _ in range(stop):
+                pool.map(lambda i: arr_str_float(matrix.data[i]), range(chunk_threads))
     finally:
         pass
     return matrix
