@@ -45,7 +45,7 @@ class NumberLexer:
             # accept sign only at the start of a number
             self._buf.append(c)
             return None
-        if c == self.DOT and self._buf and not self._has_dot:
+        if c == self.DOT and not self._has_dot:
             # accept the first decimal point inside a number
             self._buf.append(c)
             self._has_dot = True
@@ -96,9 +96,8 @@ def read_chunks(fd, index, size) -> ChunkMetadata:
     #print(raw)
     return info
 
-def recostruct_matrix(chunks: list[ChunkMetadata]) -> Matrix:
+def reconstruct_numbers(chunks: list[ChunkMetadata]) -> Matrix:
     matrix = Matrix()
-
     # stitch tokens split across chunk boundaries:
     # if chunk i ends mid-number and chunk i+1 does not start on a newline,
     # the tail of chunk i and the head of chunk i+1 form a single token
@@ -113,6 +112,9 @@ def recostruct_matrix(chunks: list[ChunkMetadata]) -> Matrix:
     matrix.cols = matrix.nums // matrix.rows
     matrix.data.extend([] for _ in range(matrix.rows - len(matrix.data)))
 
+    return matrix
+
+def realignment(matrix: Matrix) -> Matrix:
     actual_matrix_length = len(matrix.data)
     i = 0
     while i < actual_matrix_length-1:
@@ -137,12 +139,38 @@ def recostruct_matrix(chunks: list[ChunkMetadata]) -> Matrix:
             i+=1
     return matrix
 
+
+
+
+
+
+
+
+
+
+
+def conv_str_float(arr: list[str]) -> list[float]:
+    try:
+        res: list[float] = [float(num) for num in arr]
+    except:
+        pass
+    return res
+
+def reconstruct(chunks: list[ChunkMetadata], n_thread:int) -> Matrix:
+    matrix = reconstruct_numbers(chunks)
+    matrix = realignment(matrix)
+    try:
+        pass
+        with ThreadPoolExecutor(max_workers=n_thread+1) as pool:
+            matrix.data = list(pool.map(lambda i: conv_str_float(matrix.data[i]), range(matrix.rows)))
+    finally:
+        pass
+    return matrix
+
 """
 Every line is intended to be an array of the matrix.
 To load the matrix, as many threads as there are CPU cores are spawned, the file is chunked and each thread loads a chunk of the matrix.
 """
-
-
 if __name__ == '__main__':
     file = sys.argv[1] # file path
 
@@ -158,17 +186,13 @@ if __name__ == '__main__':
     print(f"num thread: {n_thread}")
     print(f"size: {size}, chunk size: {chunk_size}, chunk rest: {chunk_rest}\n")
 
-    merged_results = ChunkMetadata()
     try:
         with ThreadPoolExecutor(max_workers=n_thread+1) as pool:
-            chunks_metas = list(pool.map(lambda i: read_chunks(fd, i, chunk_size), range(n_thread)))
-
-        # read the remainder bytes (size % n_thread) that were not covered by the equal-sized chunks
-        chunks_metas.append(read_chunks(fd, n_thread, chunk_size))
+            chunks_metas = list(pool.map(lambda i: read_chunks(fd, i, chunk_size), range(n_thread+1)))
     finally:
         os.close(fd)
 
-    matrix = recostruct_matrix(chunks_metas)
+    matrix = reconstruct(chunks_metas, n_thread)
 
     print(matrix.data)
     print(f"col count: {matrix.cols}, row count: {matrix.rows}, total nums: {matrix.nums}")
