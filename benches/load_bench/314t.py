@@ -149,16 +149,18 @@ def arr_str_float(arr: list):
 def reconstruct(chunks: list[ChunkMetadata], max_threads:int) -> Matrix:
     matrix = reconstruct_numbers(chunks)
     matrix = realignment(matrix)
+    remaining_rows = matrix.rows
     try:
-        with ThreadPoolExecutor(max_workers=max_threads+1) as pool:
-            mx = max(matrix.rows, max_threads)
-            chunk_threads = min(matrix.rows, max_threads)
-            stop = (mx//chunk_threads)+1
-            print(stop, chunk_threads)
-            for j in range(stop):
-                if j == stop-1:
-                    chunk_threads = mx%chunk_threads # BUGBUGUGUGUGUGU
-                pool.map(lambda i: arr_str_float(matrix.data[i+j]), range(chunk_threads))
+        chunk_threads = max_threads
+        iters = (matrix.rows//chunk_threads)+(matrix.rows%chunk_threads)
+        for _ in range(iters):
+            with ThreadPoolExecutor(max_workers=max_threads+1) as pool:
+                pool.map(lambda i: arr_str_float(matrix.data[i+(matrix.rows-remaining_rows)]), range(chunk_threads))
+
+            print(matrix.rows, chunk_threads, iters, remaining_rows)
+            if remaining_rows < chunk_threads:
+                chunk_threads = remaining_rows
+            remaining_rows -= chunk_threads
     finally:
         pass
     return matrix
