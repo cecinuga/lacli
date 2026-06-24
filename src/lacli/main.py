@@ -1,8 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor
 import os
 import sys
-from utils.reconstruction import reconstruct
-from utils.file import read_chunk
+from core.reconstruction import reconstruct
+from core.file import read_chunk
 
 print(sys.version)                      # must contain "free-threaded build"
 
