@@ -1,5 +1,6 @@
 import os
-from models.matrix import ChunkMetadata, Matrix
+from lacli.models.lexer import NumberLexer
+from lacli.models.matrix import ChunkMetadata, Matrix
 
 def read_chunk(fd, index, size) -> ChunkMetadata:
     """

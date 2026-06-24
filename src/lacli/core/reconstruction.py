@@ -1,7 +1,7 @@
 import os
 from concurrent.futures import ThreadPoolExecutor
-from models.matrix import ChunkMetadata, Matrix
-from models.lexer import NumberLexer
+from lacli.models.matrix import ChunkMetadata, Matrix
+from lacli.models.lexer import NumberLexer
 
 __all__ = ["reconstruction"]
 
