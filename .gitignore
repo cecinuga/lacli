@@ -3,7 +3,7 @@ __pycache__/
 *.py[codz]
 *$py.class
 
-# C extensions
+uv.lock
 *.so
 .claude/
 test_assets/
