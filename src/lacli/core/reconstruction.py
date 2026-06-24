@@ -1,9 +1,8 @@
 import os
 from concurrent.futures import ThreadPoolExecutor
 from lacli.models.matrix import ChunkMetadata, Matrix
-from lacli.models.lexer import NumberLexer
 
-__all__ = ["reconstruction"]
+__all__ = ["reconstruct"]
 
 def _reconstruct_numbers(chunks: list[ChunkMetadata]) -> Matrix:
     matrix = Matrix()
@@ -66,7 +65,6 @@ def reconstruct(chunks: list[ChunkMetadata], max_threads:int) -> Matrix:
             with ThreadPoolExecutor(max_workers=max_threads+1) as pool:
                 pool.map(lambda i: _arr_str_float(matrix.data[i+(matrix.rows-remaining_rows)]), range(chunk_threads))
 
-            print(matrix.rows, chunk_threads, iters, remaining_rows)
             if remaining_rows < chunk_threads:
                 chunk_threads = remaining_rows
             remaining_rows -= chunk_threads

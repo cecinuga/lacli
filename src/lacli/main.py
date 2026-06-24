@@ -21,9 +21,10 @@ def run(fd: int, n_thread: int):
         raise Exception("error reading chunks threads")
 
     matrix = reconstruct(chunks_metas, n_thread)
-    return matrix
     #print(matrix.data)
-    #print(f"col count: {matrix.cols}, row count: {matrix.rows}, total nums: {matrix.nums}")
+    print(f"col count: {matrix.cols}, row count: {matrix.rows}, total nums: {matrix.nums}")
+
+    return matrix
 
 """
 Every line is intended to be an array of the matrix.

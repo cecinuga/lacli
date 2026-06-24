@@ -1,4 +1,4 @@
-class NumberLexer:
+class Lexer:
     """
     Streaming byte-level tokenizer that emits numeric strings (integer or float) from raw bytes.
 
@@ -42,6 +42,6 @@ class NumberLexer:
         s = "".join(self._buf)
         self._buf.clear()
         self._has_dot = False
-        if not any(ch.isdigit() for ch in s):
-            return None
+        #if not any((ch.isdigit() or ch in self.SIGNS) for ch in s):
+        #    return None
         return s
