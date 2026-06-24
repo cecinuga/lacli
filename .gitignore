@@ -8,7 +8,7 @@ uv.lock
 .claude/
 test_assets/
 test_scripts/
-benches/datasets/*.csv
+tests/datasets/*.csv
 
 # Distribution / packaging
 .Python

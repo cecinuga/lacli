@@ -24,7 +24,7 @@ Usage: $0 <count> [outdir=<dir>]
 Random parameter ranges per file:
   row    [1, 500]
   col    [1, 50]
-  type   int | double  (50/50)
+  type   int | float  (50/50)
 EOF
             exit 0
             ;;
@@ -52,7 +52,7 @@ done
 mkdir -p "$outdir"
 
 # -------- 3. Generation --------
-types=("int" "double")
+types=("int" "float")
 
 for ((k = 1; k <= count; k++)); do
     rows=$(( RANDOM % 500 + 1 ))
