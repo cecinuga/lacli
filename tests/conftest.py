@@ -10,10 +10,23 @@ DATASET_DIR = Path(__file__).parent / "datasets"
     params=sorted(DATASET_DIR.glob("*")),
     ids=lambda p: p.name,
 )
-def shared_fd_reader(request):
-    p = request.param
-    fd = os.open(p, os.O_RDONLY)
-    with open(p, newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
-        yield (fd, reader)
-        os.close(fd)
+def dataset_path(request):
+    return request.param
+
+@pytest.fixture
+def shared_fd(dataset_path):
+    fd = os.open(dataset_path, os.O_RDONLY)
+    yield fd
+    os.close(fd)
+
+@pytest.fixture
+def csv_reader(dataset_path):
+    with open(dataset_path, newline='') as csvfile:
+        yield csv.reader(csvfile, delimiter=',')
+
+@pytest.fixture(
+    scope="package",
+    params=[8]
+)
+def n_thread(request):
+    yield request.param

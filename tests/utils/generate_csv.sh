@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Generates a CSV of random numbers.
-# Usage: ./gen_random_csv.sh row=<int> col=<int> type=<int|double> [out=<file>]
+# Usage: ./gen_random_csv.sh row=<int> col=<int> type=<int|float> [out=<file>]
 
 set -euo pipefail
 
@@ -15,12 +15,12 @@ for arg in "$@"; do
         out=*)  out="${arg#out=}"   ;;
         -h|--help)
             cat <<EOF
-Usage: $0 row=<int> col=<int> type=<int|double> [out=<file>]
+Usage: $0 row=<int> col=<int> type=<int|float> [out=<file>]
 
   row    number of rows    (positive integer)
   col    number of columns (positive integer)
   type   int    -> integers, randomly positive or negative, magnitude in [0, 100)
-         double -> reals with random precision (1-10 decimal digits),
+         float -> reals with random precision (1-10 decimal digits),
                    randomly chosen as: positive [1, 10001), negative (-10001, -1], or fractional [0, 1)
   out    output file (default: stdout)
 EOF
@@ -43,8 +43,8 @@ done
 [[ "$cols" =~ ^[1-9][0-9]*$ ]] \
     || { echo "Error: col must be a positive integer, got '$cols'" >&2; exit 2; }
 
-[[ "$type" == "int" || "$type" == "double" ]] \
-    || { echo "Error: type must be 'int' or 'double', got '$type'" >&2; exit 2; }
+[[ "$type" == "int" || "$type" == "float" ]] \
+    || { echo "Error: type must be 'int' or 'float', got '$type'" >&2; exit 2; }
 
 # -------- 3. Generation (all inside awk, single process) --------
 generate() {
