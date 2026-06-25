@@ -6,9 +6,6 @@ from lacli.models.matrix import ChunkMetadata, Matrix
 __all__ = ["reconstruct"]
 
 def _reconstruct_numbers(chunks: list[ChunkMetadata]) -> Matrix:
-    for chunk in chunks:
-        print(chunk.data, chunk.is_first_stop, chunk.is_last_truncated, chunk.newline_num)
-
     """
     Stitch chunk-boundary-split tokens and flatten chunk data into matrix rows.
 
@@ -20,14 +17,23 @@ def _reconstruct_numbers(chunks: list[ChunkMetadata]) -> Matrix:
     # stitch tokens split across chunk boundaries:
     # if chunk i ends mid-number and chunk i+1 does not start on a newline,
     # the tail of chunk i and the head of chunk i+1 form a single token
-    for i, chunk in enumerate(chunks):
-        if i+1 < len(chunks) and chunk.is_last_truncated and not chunks[i+1].is_first_stop:
-            chunk.data[-1] += chunks[i+1].data[0]
-            chunks[i+1].data.pop(0)
+    i = 0
+    while i < len(chunks):
+        j = i
+        is_truncated = chunks[j].is_last_truncated
+        while j+1 < len(chunks) and is_truncated and not chunks[j+1].is_first_stop:
+            chunks[i].data[-1] += chunks[j+1].data[0]
+            chunks[j+1].data.pop(0)
+            if len(chunks[j+1].data) == 0:
+                is_truncated = chunks[j+1].is_last_truncated
+                matrix.rows += chunks[i+1].newline_num
+                chunks.pop(j+1)
+            else: break
 
-        matrix.nums += len(chunk.data)
-        matrix.data.append(chunk.data)
-        matrix.rows += chunk.newline_num
+        matrix.nums += len(chunks[i].data)
+        matrix.data.append(chunks[i].data)
+        matrix.rows += chunks[i].newline_num
+        i += 1
     matrix.cols = matrix.nums // matrix.rows
     matrix.data.extend([] for _ in range(matrix.rows - len(matrix.data)))
 
