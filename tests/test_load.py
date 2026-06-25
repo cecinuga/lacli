@@ -1,4 +1,4 @@
-"""Integration tests: load.main.run output must match the dataset parsed as plain CSV."""
+"""Integration tests: lacli.main.run output must match the dataset parsed as plain CSV."""
 import pytest
 from lacli.main import run
 

@@ -56,7 +56,7 @@ types=("int" "float")
 
 for ((k = 1; k <= count; k++)); do
     rows=$(( RANDOM % 500 + 1 ))
-    cols=$(( RANDOM % 50  + 1 ))
+    cols=$(( RANDOM % 500 + 1 ))
     type="${types[RANDOM % 2]}"
     outfile="$(printf '%s/%d_%d_%s.csv' "$outdir" "$rows" "$cols" "$type")"
 
