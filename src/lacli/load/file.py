@@ -3,12 +3,11 @@ import os
 from lacli.models.lexer import Lexer
 from lacli.models.matrix import ChunkMetadata, Matrix
 
-def read_chunk(fd, index, size) -> ChunkMetadata:
+def read_chunk(fd, offset, size) -> ChunkMetadata:
     """
     Read `size` bytes at byte offset `index * size` from `fd` using pread (thread-safe, no seek).
     Lex all numeric tokens in the slice and record newline count and boundary conditions.
     """
-    offset = index*size
     raw = os.pread(fd, size, offset)
     info = ChunkMetadata()
     lexer = Lexer()
@@ -28,7 +27,4 @@ def read_chunk(fd, index, size) -> ChunkMetadata:
         info.data.append(last)
         info.is_last_truncated = True  # token was cut at the chunk boundary; must be joined with next chunk
 
-    #print(raw)
-    #print(info.data)
-    #print('--------------------------------')
     return info

@@ -2,11 +2,12 @@
 
 class Lexer:
     """
-    Streaming byte-level tokenizer that emits numeric strings (integer or float) from raw bytes.
+    Streaming byte-level tokenizer that emits strings from raw bytes.
 
-    Accumulates characters into a buffer and flushes a complete token when a non-numeric
-    delimiter is encountered. Accepts an optional leading sign, at most one decimal point,
-    and rejects buffers that contain no digit (e.g. a bare '+').
+    Accumulates characters into a buffer and flushes the accumulated token when a
+    non-numeric delimiter is encountered. Accepts an optional leading sign and at
+    most one decimal point; the digit-only validation that would reject a bare
+    sign (e.g. '+') is currently disabled (see `_flush`).
     """
     DIGITS = set("0123456789")
     SIGNS  = set("+-")
@@ -38,7 +39,12 @@ class Lexer:
         return self._flush()
 
     def _flush(self) -> str | None:
-        """Drain the buffer; return the accumulated string only if it contains at least one digit."""
+        """
+        Drain the buffer and return the accumulated string, or None if the buffer is empty.
+
+        NOTE: the digit-only check below is disabled, so a buffer with no digits
+        (e.g. a bare '+' or '-') is currently returned as-is rather than rejected.
+        """
         if not self._buf:
             return None
         s = "".join(self._buf)

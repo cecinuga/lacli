@@ -25,18 +25,23 @@ def run(fd: int, n_thread: int):
     """
     size = os.stat(fd).st_size
     chunk_size = size // n_thread
+    chunk_rest = size%n_thread
 
     #print(f"num thread: {n_thread}")
-    #print(f"size: {size}, chunk size: {chunk_size}\n")
+    #print(f"size: {size}, chunk size: {chunk_size}, chunk rest: {chunk_rest}\n")
 
+    chunks_meta = []
     try:
-        with ThreadPoolExecutor(max_workers=n_thread+1) as pool:
-            chunks_metas = list(pool.map(lambda i: read_chunk(fd, i, chunk_size), range(n_thread+1)))
+        with ThreadPoolExecutor(max_workers=n_thread) as pool:
+            chunks_meta.extend(list(pool.map(lambda i: read_chunk(fd, i*chunk_size, chunk_size), range(n_thread))))
+        if chunk_rest > 0:
+            chunks_meta.append(read_chunk(fd, chunk_size*n_thread, chunk_rest))
     except:
         raise Exception("error reading chunks threads")
 
-    matrix = reconstruct(chunks_metas, n_thread)
-    #print(matrix.data)
+    matrix = reconstruct(chunks_meta, n_thread)
+
+    print(matrix.data)
     print(f"col count: {matrix.cols}, row count: {matrix.rows}, total nums: {matrix.nums}")
 
     return matrix
