@@ -7,7 +7,9 @@ def test_lacli(shared_fd, csv_reader, n_thread):
     """Assert `run`'s reconstructed Matrix equals the csv.reader ground truth for each dataset/thread-count combo."""
     matrix = run(shared_fd, n_thread)
     expected = list(csv_reader)
+
     assert len(matrix.data) == len(expected)
+    assert matrix.nums == sum(len(row) for row in expected)
     for actual_row, expected_row in zip(matrix.data, expected):
         assert len(actual_row) == len(expected_row)
         assert actual_row == [float(v) for v in expected_row]
