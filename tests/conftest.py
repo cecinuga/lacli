@@ -26,7 +26,7 @@ def csv_reader(dataset_path):
 
 @pytest.fixture(
     scope="package",
-    params=[8]
+    params=[2, 3, 4, 5, 6, 7, 8]
 )
 def n_thread(request):
     yield request.param
