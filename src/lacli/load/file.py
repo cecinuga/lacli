@@ -1,3 +1,4 @@
+"""Reads and lexes a single byte-range chunk of the input file into a ChunkMetadata."""
 import os
 from lacli.models.lexer import Lexer
 from lacli.models.matrix import ChunkMetadata, Matrix

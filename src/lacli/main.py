@@ -1,3 +1,10 @@
+"""
+CLI entry point: loads a numeric CSV-like file into a Matrix using parallel threads.
+
+Every line is intended to be an array of the matrix. To load the matrix, the file is
+split into byte chunks (one per thread plus a remainder), each chunk is lexed
+concurrently, and the resulting per-chunk token lists are stitched back into a Matrix.
+"""
 from concurrent.futures import ThreadPoolExecutor
 import os
 import sys
@@ -7,6 +14,15 @@ from lacli.load.file import read_chunk
 print(sys.version)                      # must contain "free-threaded build"
 
 def run(fd: int, n_thread: int):
+    """
+    Load and parse the file at `fd` into a Matrix using `n_thread` worker threads.
+
+    Splits the file into `n_thread+1` byte-sized chunks, parses each chunk
+    concurrently with `read_chunk`, and merges the results via `reconstruct`.
+
+    Input: `fd` open file descriptor (read-only), `n_thread` number of worker threads.
+    Output: the reconstructed `Matrix`.
+    """
     size = os.stat(fd).st_size
     chunk_size = size // n_thread
 
@@ -25,10 +41,6 @@ def run(fd: int, n_thread: int):
 
     return matrix
 
-"""
-Every line is intended to be an array of the matrix.
-To load the matrix, as many threads as there are CPU cores are spawned, the file is chunked and each thread loads a chunk of the matrix.
-"""
 if __name__ == '__main__':
     file = sys.argv[1] # file path
     n_thread = os.cpu_count()

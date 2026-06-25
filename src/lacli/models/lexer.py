@@ -1,3 +1,5 @@
+"""Byte-level numeric tokenizer used by load.file.read_chunk."""
+
 class Lexer:
     """
     Streaming byte-level tokenizer that emits numeric strings (integer or float) from raw bytes.

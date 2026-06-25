@@ -1,3 +1,5 @@
+"""Data structures shared between the load and reconstruction stages."""
+
 class ChunkMetadata:
     """Parsed output of a single file chunk: extracted numbers and boundary flags used during merge."""
     def __init__(self):
@@ -7,6 +9,11 @@ class ChunkMetadata:
         self.data: list[str] = []
 
 class Matrix:
+    """
+    The reconstructed numeric grid: `data` is a list of rows, each a list of numbers
+    (strings until converted to float by `reconstruct`). `rows`/`cols`/`nums` are
+    counts derived during reconstruction.
+    """
     def __init__(self):
         self.cols = 0
         self.rows = 0

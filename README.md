@@ -22,7 +22,6 @@ Pure Python is too slow, approximatelly 3sec for cicle 10000 numbers, inaceptabl
 #### Change language for file loading and matrix creation
 Go ? C ? C++ ? boh (boh for now)
 
-
 ### I/O
 
 You can set stdin and stdout to use files, pipes, or both in powerful combinations.
