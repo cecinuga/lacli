@@ -9,6 +9,8 @@ def read_chunk(fd, offset, size) -> ChunkMetadata:
     Lex all numeric tokens in the slice and record newline count and boundary conditions.
     """
     raw = os.pread(fd, size, offset)
+    print(raw)
+    print('+++++++++++++++++++++++++++++++')
     info = ChunkMetadata()
     lexer = Lexer()
 

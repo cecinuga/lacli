@@ -6,6 +6,9 @@ from lacli.models.matrix import ChunkMetadata, Matrix
 __all__ = ["reconstruct"]
 
 def _reconstruct_numbers(chunks: list[ChunkMetadata]) -> Matrix:
+    for chunk in chunks:
+        print(chunk.data, chunk.is_first_stop, chunk.is_last_truncated, chunk.newline_num)
+
     """
     Stitch chunk-boundary-split tokens and flatten chunk data into matrix rows.
 

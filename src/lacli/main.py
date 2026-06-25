@@ -41,8 +41,8 @@ def run(fd: int, n_thread: int):
 
     matrix = reconstruct(chunks_meta, n_thread)
 
-    print(matrix.data)
-    print(f"col count: {matrix.cols}, row count: {matrix.rows}, total nums: {matrix.nums}")
+    #print(matrix.data)
+    #print(f"col count: {matrix.cols}, row count: {matrix.rows}, total nums: {matrix.nums}")
 
     return matrix
 
