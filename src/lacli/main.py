@@ -1,9 +1,8 @@
-import csv
 from concurrent.futures import ThreadPoolExecutor
 import os
 import sys
-from lacli.core.reconstruction import reconstruct
-from lacli.core.file import read_chunk
+from lacli.load.recon import reconstruct
+from lacli.load.file import read_chunk
 
 print(sys.version)                      # must contain "free-threaded build"
 
