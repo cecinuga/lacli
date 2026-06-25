@@ -39,7 +39,7 @@ Nothing forbids to organize the command accesible feature in sub-commands and so
 | Format | Extensions | Supported |
 |--------|------------|-------------|
 | JSON | `.json` | NO |
-| CSV | `.csv` | NO |
+| CSV | `.csv` | YES |
 
 **Multidimensional & Big Data Formats**
 
