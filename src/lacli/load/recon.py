@@ -1,5 +1,4 @@
 """Merges per-chunk parse results (ChunkMetadata) produced by load.file.read_chunk into a single Matrix."""
-import os
 from concurrent.futures import ThreadPoolExecutor
 from lacli.models.matrix import ChunkMetadata, Matrix
 
