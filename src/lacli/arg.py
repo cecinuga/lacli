@@ -1,0 +1,14 @@
+import os
+import argparse
+
+def get_argparse():
+    parser = argparse.ArgumentParser(
+        prog='lacli',
+        description='linear algebra in your console',
+        suggest_on_error=True
+    )
+    parser.add_argument('-f', '--file', help='the file to load, relative path', type=str, required=True)
+    parser.add_argument('-t', '--thread', default=os.cpu_count(), help='number of threads for uploading the file', type=int)
+    parser.add_argument('-b', action='store_true', default='enable benchmark')
+
+    return parser
