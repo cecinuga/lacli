@@ -1,4 +1,4 @@
-"""Merges per-chunk parse results (ChunkMetadata) produced by load.file.read_chunk into a single Matrix."""
+"""Merges per-chunk parse results into a single Matrix."""
 from concurrent.futures import ThreadPoolExecutor
 from lacli.models.matrix import ChunkMetadata, Matrix
 
@@ -6,11 +6,8 @@ __all__ = ["reconstruct"]
 
 def _reconstruct_numbers(chunks: list[ChunkMetadata]) -> Matrix:
     """
-    Stitch chunk-boundary-split tokens and flatten chunk data into matrix rows.
-
-    Input: ordered list of `ChunkMetadata` (one per file chunk).
-    Output: a `Matrix` whose `data` holds one list-of-tokens per chunk (not yet
-    aligned to real rows) and whose `rows`/`nums`/`cols` are derived counts.
+    Stitch chunk-boundary-split tokens and flatten into rows; the result's `data` holds
+    one token list per chunk, not yet aligned to real `cols`-sized rows.
     """
     matrix = Matrix()
     # stitch tokens split across chunk boundaries:
@@ -40,13 +37,9 @@ def _reconstruct_numbers(chunks: list[ChunkMetadata]) -> Matrix:
 
 def _realignment(matrix: Matrix) -> Matrix:
     """
-    Reflow per-chunk token lists into proper rows of `matrix.cols` length each.
-
-    Chunk boundaries (byte-based) rarely align with row boundaries (newline-based),
-    so this moves overflow tokens forward and pulls missing tokens from the next
-    row, dropping any row left empty in the process.
-
-    Input/Output: `Matrix` with `data` realigned in place; same object is returned.
+    Reflow per-chunk token lists into proper rows of `matrix.cols` length each, since byte-based
+    chunk boundaries rarely align with newline-based row boundaries; moves overflow tokens
+    forward, pulls missing ones from the next row, and drops any row left empty.
     """
     actual_matrix_length = len(matrix.data)
     i = 0
@@ -82,14 +75,9 @@ def _arr_str_float(arr: list):
 
 def reconstruct(chunks: list[ChunkMetadata], max_threads:int) -> Matrix:
     """
-    Build the final numeric `Matrix` from per-chunk parse results.
-
-    Pipeline: merge boundary-split tokens and flatten chunks (`_reconstruct_numbers`),
-    realign tokens into proper rows (`_realignment`), then convert each row's string
-    tokens to floats, processing `max_threads` rows at a time via a thread pool.
-
-    Input: `chunks` per-file-chunk parse results, `max_threads` rows to convert per batch.
-    Output: the completed `Matrix` with float data.
+    Build the final numeric `Matrix` from per-chunk parse results: merge boundary-split
+    tokens, realign them into proper rows, then convert each row's string tokens to
+    floats in batches of `max_threads` rows.
     """
     matrix = _reconstruct_numbers(chunks)
     matrix = _realignment(matrix)

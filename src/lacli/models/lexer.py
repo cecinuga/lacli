@@ -1,13 +1,12 @@
-"""Byte-level numeric tokenizer used by load.file.read_chunk."""
+"""Byte-level numeric tokenizer."""
 
 class Lexer:
     """
-    Streaming byte-level tokenizer that emits strings from raw bytes.
+    Streaming byte-level tokenizer that emits number strings from raw bytes.
 
-    Accumulates characters into a buffer and flushes the accumulated token when a
-    non-numeric delimiter is encountered. Accepts an optional leading sign and at
-    most one decimal point; the digit-only validation that would reject a bare
-    sign (e.g. '+') is currently disabled (see `_flush`).
+    Accumulates digits into a buffer and flushes the token on a non-numeric delimiter.
+    Accepts an optional leading sign and at most one decimal point; note that the
+    digit-only validation rejecting a bare sign (e.g. '+') is currently disabled.
     """
     DIGITS = set("0123456789")
     SIGNS  = set("+-")

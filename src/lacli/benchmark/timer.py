@@ -17,10 +17,8 @@ class TimerResult:
 @contextmanager
 def timer(label="block"):
     """
-    Context manager that times the wrapped block.
-
-    Input: `label` (unused for now, intended for identifying the block).
-    Output: yields a `TimerResult` whose `.ns` is filled in once the block exits.
+    Times the wrapped `with` block; `label` is currently unused. Yields a `TimerResult`
+    whose `.ns` is only populated once the block exits.
     """
     result = TimerResult()
     t0 = time.perf_counter_ns()

@@ -1,9 +1,6 @@
 """
-CLI entry point: loads a numeric CSV-like file into a Matrix using parallel threads.
-
-Every line is intended to be an array of the matrix. To load the matrix, the file is
-split into byte chunks (one per thread plus a remainder), each chunk is lexed
-concurrently, and the resulting per-chunk token lists are stitched back into a Matrix.
+CLI entry point: loads a numeric CSV-like file into a Matrix by splitting it into byte
+chunks, lexing each concurrently, and stitching the per-chunk tokens back together.
 """
 import os
 import sys
@@ -16,6 +13,7 @@ from lacli.models.matrix import Matrix
 print(sys.version)
 
 def run(args: Namespace) -> Matrix:
+    """Open `args.file`, load it into a Matrix with `args.thread` threads, then close the file."""
     fd = os.open(args.file, os.O_RDONLY)
     matrix = file.load(fd, args.thread)
     os.close(fd)

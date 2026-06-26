@@ -33,6 +33,7 @@ def read_chunk(fd, offset, size) -> ChunkMetadata:
     return info
 
 def read_file(fd: int, n_thread: int) -> list[ChunkMetadata]:
+    """Split `fd` into `n_thread` equal byte chunks plus a remainder, lexing each chunk concurrently."""
     size = os.stat(fd).st_size
     chunk_size = size // n_thread
     chunk_rest = size%n_thread
@@ -45,15 +46,7 @@ def read_file(fd: int, n_thread: int) -> list[ChunkMetadata]:
     return chunks_meta
 
 def load(fd: int, n_thread: int) -> Matrix:
-    """
-    Load and parse the file at `fd` into a Matrix using `n_thread` worker threads.
-
-    Splits the file into `n_thread+1` byte-sized chunks, parses each chunk
-    concurrently with `read_chunk`, and merges the results via `reconstruct`.
-
-    Input: `fd` open file descriptor (read-only), `n_thread` number of worker threads.
-    Output: the reconstructed `Matrix`.
-    """
+    """Load and parse the file at `fd` into a Matrix, splitting it into `n_thread+1` byte chunks processed concurrently."""
     #print(f"num thread: {n_thread}")
     #print(f"size: {size}, chunk size: {chunk_size}, chunk rest: {chunk_rest}\n")
 
