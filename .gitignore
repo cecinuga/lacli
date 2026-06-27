@@ -9,6 +9,7 @@ uv.lock
 test_assets/
 test_scripts/
 tests/datasets/*.csv
+Assessment.md
 
 # Distribution / packaging
 .Python
