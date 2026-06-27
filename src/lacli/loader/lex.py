@@ -16,12 +16,12 @@ def lex(chunks: list[bytes]) -> ndarray:
     arr = np.concatenate([np.frombuffer(chunk, dtype=np.uint8) for chunk in chunks])
     newlines = arr == NEWLINE
     commas = arr == COMMA
-    newlines_pos = np.flatnonzero(newlines)
-    fields = np.split(arr, newlines_pos)
+    delims = newlines | commas
+    delims_pos = np.flatnonzero(delims)
+    fields = np.split(arr, delims_pos)
 
-    print(arr)
-    #print(newlines_pos)
-    #print(fields)
+    print(delims_pos)
+    print(fields)
     print('done!')
     exit(1)
 

@@ -18,7 +18,7 @@ def read_raw(fd: int, thread: int) -> list[bytes]:
 
     with ThreadPoolExecutor(max_workers=thread) as pool:
         return list(pool.map(
-            lambda off: os.pread(fd, chunk_size, min(off, size - off)),
+            lambda off: os.pread(fd, min(chunk_size, size - off), off),
             offsets,
     ))
 
