@@ -23,7 +23,7 @@ def _merge_numbers(chunks: list[ChunkMetadata]) -> Matrix:
             chunks[j+1].data.pop(0)
             if len(chunks[j+1].data) == 0:
                 is_truncated = chunks[j+1].is_last_truncated
-                matrix.rows += chunks[i+1].newline_num
+                matrix.rows += chunks[j+1].newline_num
                 chunks.pop(j+1)
             else: break
 
@@ -47,12 +47,12 @@ def _realignment(matrix: Matrix) -> Matrix:
     while i < actual_matrix_length-1:
         curr = i
         next = i+1
-        if i+1 < len(matrix.data) and len(matrix.data[curr]) > matrix.cols:
+        if i+1 < actual_matrix_length and len(matrix.data[curr]) > matrix.cols:
             remainders = matrix.data[curr][matrix.cols:]
             matrix.data[next][:0] = remainders
             matrix.data[curr] = matrix.data[curr][:matrix.cols]
 
-        if i+1 < len(matrix.data) and len(matrix.data[curr]) < matrix.cols:
+        if i+1 < actual_matrix_length and len(matrix.data[curr]) < matrix.cols:
             resize_index = matrix.cols-len(matrix.data[curr])
             missings = matrix.data[next][:resize_index]
             matrix.data[curr][len(matrix.data[curr]):] = missings

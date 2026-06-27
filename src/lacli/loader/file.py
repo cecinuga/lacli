@@ -40,7 +40,7 @@ def read_file(fd: int, thread: int) -> list[ChunkMetadata]:
     if thread == 1 or sys._is_gil_enabled():
         return [read_chunk(fd, 0, size)]
 
-    chunk_size = size//10
+    chunk_size = size//thread
     offsets = range(0, size, chunk_size)
 
     with ThreadPoolExecutor(max_workers=thread) as pool:
