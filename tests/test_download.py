@@ -3,9 +3,9 @@ import pytest
 from lacli.download.file import download
 
 @pytest.mark.integration
-def test_download(shared_fd: int, csv_reader, n_thread: int):
+def test_download(shared_fd: int, csv_reader, thread: int):
     """Assert `run`'s reconstructed Matrix equals the csv.reader ground truth for each dataset/thread-count combo."""
-    matrix = download(shared_fd, n_thread)
+    matrix = download(shared_fd, thread)
     expected = list(csv_reader)
 
     assert len(matrix.data) == len(expected)
