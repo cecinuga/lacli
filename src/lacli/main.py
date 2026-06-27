@@ -2,19 +2,19 @@
 CLI entry point: loads a numeric CSV-like file into a Matrix by splitting it into byte
 chunks, lexing each concurrently, and stitching the per-chunk tokens back together.
 """
+from pathlib import Path
 import os
 import sys
-from argparse import Namespace
 from lacli.arg import get_argparse
 from lacli.models.matrix import Matrix
-from lacli.upload.file import upload
+from lacli.download.file import download
 
 print(sys.version)
 
-def run(file, thread) -> Matrix:
+def run(file: Path, thread) -> Matrix:
     """Open `args.file`, load it into a Matrix with `args.thread` threads, then close the file."""
     fd = os.open(file, os.O_RDONLY)
-    matrix = upload(fd, thread)
+    matrix = download(fd, thread)
     os.close(fd)
     return matrix
 

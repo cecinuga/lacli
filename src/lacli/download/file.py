@@ -1,9 +1,9 @@
 """Reads and lexes a single byte-range chunk of the input file into a ChunkMetadata."""
 import os
 from concurrent.futures import ThreadPoolExecutor
-from lacli.models.lexer import Lexer
+from lacli.download.lexer import Lexer
 from lacli.models.matrix import ChunkMetadata, Matrix
-from lacli.upload.recon import reconstruct
+from lacli.download.recon import reconstruct
 
 def read_chunk(fd, offset, size) -> ChunkMetadata:
     """
@@ -44,8 +44,8 @@ def read_file(fd: int, n_thread: int) -> list[ChunkMetadata]:
 
     return chunks_meta
 
-def upload(fd: int, n_thread: int) -> Matrix:
-    """Load and parse the file at `fd` into a Matrix, splitting it into `n_thread+1` byte chunks processed concurrently."""
+def download(fd: int, n_thread: int) -> Matrix:
+    """Load and parse the file at `fd` into a Matrix, splitting it into `n_thread` byte chunks processed concurrently."""
     #print(f"num thread: {n_thread}")
     #print(f"size: {size}, chunk size: {chunk_size}, chunk rest: {chunk_rest}\n")
 
