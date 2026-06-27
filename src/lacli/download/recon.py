@@ -73,25 +73,24 @@ def _arr_str_float(arr: list):
         arr[i] = float(arr[i])
     return arr
 
-def reconstruct(chunks: list[ChunkMetadata], max_threads:int) -> Matrix:
+def reconstruct(chunks: list[ChunkMetadata], threads:int) -> Matrix:
     """
     Build the final numeric `Matrix` from per-chunk parse results: merge boundary-split
     tokens, realign them into proper rows, then convert each row's string tokens to
-    floats in batches of `max_threads` rows.
+    floats in batches of `threads` rows.
     """
     matrix = _reconstruct_numbers(chunks)
     matrix = _realignment(matrix)
     remaining_rows = matrix.rows
-    try:
-        chunk_threads = max_threads
-        iters = (matrix.rows//chunk_threads)+(matrix.rows%chunk_threads)
-        for _ in range(iters):
-            with ThreadPoolExecutor(max_workers=max_threads+1) as pool:
-                pool.map(lambda i: _arr_str_float(matrix.data[i+(matrix.rows-remaining_rows)]), range(chunk_threads))
+    chunk_threads = threads
+    iters = -(-matrix.rows//threads)
 
-            if remaining_rows < chunk_threads:
-                chunk_threads = remaining_rows
-            remaining_rows -= chunk_threads
-    finally:
-        pass
+    for _ in range(iters):
+        with ThreadPoolExecutor(max_workers=threads+1) as pool:
+            pool.map(lambda i: _arr_str_float(matrix.data[i+(matrix.rows-remaining_rows)]), range(chunk_threads))
+
+        if remaining_rows < chunk_threads:
+            chunk_threads = remaining_rows
+        remaining_rows -= chunk_threads
+
     return matrix

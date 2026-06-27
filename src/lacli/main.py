@@ -12,10 +12,12 @@ from lacli.download.file import download
 print(sys.version)
 
 def run(file: Path, thread) -> Matrix:
-    """Open `args.file`, load it into a Matrix with `args.thread` threads, then close the file."""
+    """Open `file`, load it into a Matrix using `thread` threads, then close the descriptor."""
     fd = os.open(file, os.O_RDONLY)
-    matrix = download(fd, thread)
-    os.close(fd)
+    try:
+        matrix = download(fd, thread)
+    finally:
+        os.close(fd)
     return matrix
 
 if __name__ == '__main__':

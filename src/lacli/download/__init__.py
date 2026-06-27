@@ -1,1 +1,1 @@
-"""File loading subpackage: reads file chunks and reconstructs them into a Matrix."""
+"""File download subpackage: reads file chunks and reconstructs them into a Matrix."""

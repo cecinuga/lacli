@@ -1,1 +1,1 @@
-"""Data model subpackage: Lexer for tokenizing bytes, and the Matrix/ChunkMetadata data structures."""
+"""Data model subpackage: Matrix/ChunkMetadata data structures."""

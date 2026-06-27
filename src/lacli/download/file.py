@@ -7,7 +7,7 @@ from lacli.download.recon import reconstruct
 
 def read_chunk(fd, offset, size) -> ChunkMetadata:
     """
-    Read `size` bytes at byte offset `index * size` from `fd` using pread (thread-safe, no seek).
+    Read `size` bytes at `offset` from `fd` using pread (thread-safe, no seek).
     Lex all numeric tokens in the slice and record newline count and boundary conditions.
     """
     raw = os.pread(fd, size, offset)
@@ -51,8 +51,8 @@ def download(fd: int, n_thread: int) -> Matrix:
 
     try:
         chunks = read_file(fd, n_thread)
-    except:
-        raise Exception("error reading chunks threads")
+    except Exception as e:
+        raise RuntimeError("error reading chunks threads") from e
 
     matrix = reconstruct(chunks, n_thread)
 
