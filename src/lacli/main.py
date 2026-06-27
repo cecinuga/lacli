@@ -11,7 +11,7 @@ from lacli.download.file import download
 
 print(sys.version)
 
-def run(file: Path, thread) -> Matrix:
+def run(file: Path, thread: int) -> Matrix:
     """Open `file`, load it into a Matrix using `thread` threads, then close the descriptor."""
     fd = os.open(file, os.O_RDONLY)
     try:
@@ -22,7 +22,7 @@ def run(file: Path, thread) -> Matrix:
 
 if __name__ == '__main__':
     args = get_argparse().parse_args()
-    if args.thread == None:
+    if args.thread is None:
         raise ValueError('thread numbers setted to None')
 
     run(args.file, args.thread)

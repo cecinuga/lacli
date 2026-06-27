@@ -1,9 +1,10 @@
 """Reads and lexes a single byte-range chunk of the input file into a ChunkMetadata."""
 import os
 from concurrent.futures import ThreadPoolExecutor
+from lacli.download.chunk import ChunkMetadata
 from lacli.download.lexer import Lexer
-from lacli.models.matrix import ChunkMetadata, Matrix
-from lacli.download.recon import reconstruct
+from lacli.models.matrix import Matrix
+from lacli.download.merge import merge
 
 def read_chunk(fd, offset, size) -> ChunkMetadata:
     """
@@ -54,7 +55,7 @@ def download(fd: int, n_thread: int) -> Matrix:
     except Exception as e:
         raise RuntimeError("error reading chunks threads") from e
 
-    matrix = reconstruct(chunks, n_thread)
+    matrix = merge(chunks, n_thread)
 
     #print(matrix.data)
     #print(f"col count: {matrix.cols}, row count: {matrix.rows}, total nums: {matrix.nums}")

@@ -1,10 +1,11 @@
 """Merges per-chunk parse results into a single Matrix."""
 from concurrent.futures import ThreadPoolExecutor
-from lacli.models.matrix import ChunkMetadata, Matrix
+from lacli.download.chunk import ChunkMetadata
+from lacli.models.matrix import Matrix
 
-__all__ = ["reconstruct"]
+__all__ = ["merge"]
 
-def _reconstruct_numbers(chunks: list[ChunkMetadata]) -> Matrix:
+def _merge_numbers(chunks: list[ChunkMetadata]) -> Matrix:
     """
     Stitch chunk-boundary-split tokens and flatten into rows; the result's `data` holds
     one token list per chunk, not yet aligned to real `cols`-sized rows.
@@ -73,24 +74,16 @@ def _arr_str_float(arr: list):
         arr[i] = float(arr[i])
     return arr
 
-def reconstruct(chunks: list[ChunkMetadata], threads:int) -> Matrix:
+def merge(chunks: list[ChunkMetadata], threads:int) -> Matrix:
     """
     Build the final numeric `Matrix` from per-chunk parse results: merge boundary-split
     tokens, realign them into proper rows, then convert each row's string tokens to
     floats in batches of `threads` rows.
     """
-    matrix = _reconstruct_numbers(chunks)
+    matrix = _merge_numbers(chunks)
     matrix = _realignment(matrix)
-    remaining_rows = matrix.rows
-    chunk_threads = threads
-    iters = -(-matrix.rows//threads)
 
-    for _ in range(iters):
-        with ThreadPoolExecutor(max_workers=threads+1) as pool:
-            pool.map(lambda i: _arr_str_float(matrix.data[i+(matrix.rows-remaining_rows)]), range(chunk_threads))
-
-        if remaining_rows < chunk_threads:
-            chunk_threads = remaining_rows
-        remaining_rows -= chunk_threads
+    with ThreadPoolExecutor(max_workers=threads) as pool:
+          list(pool.map(_arr_str_float, matrix.data))
 
     return matrix
