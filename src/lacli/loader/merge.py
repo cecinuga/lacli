@@ -1,5 +1,6 @@
 """Merges per-chunk parse results into a single Matrix."""
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from lacli.benchmark.timer import timer
 from lacli.loader.chunk import ChunkMetadata
 from lacli.models.matrix import Matrix
 
@@ -72,6 +73,7 @@ def _arr_str_float(arr: list):
     """Convert every element of `arr` from string to float in place; return `arr`."""
     for i in range(len(arr)):
         arr[i] = float(arr[i])
+
     return arr
 
 def merge(chunks: list[ChunkMetadata], threads:int) -> Matrix:
@@ -80,10 +82,11 @@ def merge(chunks: list[ChunkMetadata], threads:int) -> Matrix:
     tokens, realign them into proper rows, then convert each row's string tokens to
     floats in batches of `threads` rows.
     """
-    matrix = _merge_numbers(chunks)
-    matrix = _realignment(matrix)
+    with timer(label="load_merge"):
+        matrix = _merge_numbers(chunks)
+        matrix = _realignment(matrix)
 
-    with ThreadPoolExecutor(max_workers=threads) as pool:
-          list(pool.map(_arr_str_float, matrix.data))
+        with ThreadPoolExecutor(max_workers=threads) as pool:
+            list(pool.map(_arr_str_float, matrix.data))
 
-    return matrix
+        return matrix
