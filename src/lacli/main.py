@@ -5,17 +5,16 @@ chunks, lexing each concurrently, and stitching the per-chunk tokens back togeth
 import os
 import sys
 from argparse import Namespace
-import lacli.load.file as file
 from lacli.arg import get_argparse
-from lacli.benchmark.timer import timer
 from lacli.models.matrix import Matrix
+from lacli.upload.file import upload
 
 print(sys.version)
 
-def run(args: Namespace) -> Matrix:
+def run(file, thread) -> Matrix:
     """Open `args.file`, load it into a Matrix with `args.thread` threads, then close the file."""
-    fd = os.open(args.file, os.O_RDONLY)
-    matrix = file.load(fd, args.thread)
+    fd = os.open(file, os.O_RDONLY)
+    matrix = upload(fd, thread)
     os.close(fd)
     return matrix
 
@@ -24,4 +23,4 @@ if __name__ == '__main__':
     if args.thread == None:
         raise ValueError('thread numbers setted to None')
 
-    run(args)
+    run(args.file, args.thread)
