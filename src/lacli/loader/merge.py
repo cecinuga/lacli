@@ -1,5 +1,4 @@
 """Merges per-chunk parse results into a single Matrix."""
-import sys
 from concurrent.futures import ThreadPoolExecutor
 from lacli.benchmark.bench import bench
 from lacli.loader.chunk import ChunkMetadata
