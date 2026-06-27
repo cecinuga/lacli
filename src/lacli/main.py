@@ -32,5 +32,8 @@ if __name__ == '__main__':
         BENCHMARK_MODES["load_read"] = True
         BENCHMARK_MODES["load_read_file"] = True
         BENCHMARK_MODES["load_merge"] = True
+        BENCHMARK_MODES["load_merge_numbers"] = True
+        BENCHMARK_MODES["load_merge_strfloat"] = True
+        BENCHMARK_MODES["load_merge_realignment"] = True
 
     run(args.file, args.thread)

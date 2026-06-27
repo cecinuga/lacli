@@ -1,8 +1,10 @@
 """Merges per-chunk parse results into a single Matrix."""
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
-from lacli.benchmark.timer import timer
+import sys
+from concurrent.futures import ThreadPoolExecutor
+from lacli.benchmark.bench import bench
 from lacli.loader.chunk import ChunkMetadata
 from lacli.models.matrix import Matrix
+import numpy as np
 
 __all__ = ["merge"]
 
@@ -49,14 +51,12 @@ def _realignment(matrix: Matrix) -> Matrix:
         curr = i
         next = i+1
         if i+1 < actual_matrix_length and len(matrix.data[curr]) > matrix.cols:
-            remainders = matrix.data[curr][matrix.cols:]
-            matrix.data[next][:0] = remainders
+            matrix.data[next][:0] = matrix.data[curr][matrix.cols:]
             matrix.data[curr] = matrix.data[curr][:matrix.cols]
 
         if i+1 < actual_matrix_length and len(matrix.data[curr]) < matrix.cols:
             resize_index = matrix.cols-len(matrix.data[curr])
-            missings = matrix.data[next][:resize_index]
-            matrix.data[curr][len(matrix.data[curr]):] = missings
+            matrix.data[curr][len(matrix.data[curr]):] = matrix.data[next][:resize_index]
             matrix.data[next] = matrix.data[next][resize_index:]
 
         if len(matrix.data[curr]) == matrix.cols:
@@ -76,17 +76,18 @@ def _arr_str_float(arr: list):
 
     return arr
 
-def merge(chunks: list[ChunkMetadata], threads:int) -> Matrix:
+def str_float(matrix: Matrix, thread: int):
+    with ThreadPoolExecutor(max_workers=thread) as pool:
+        list(pool.map(_arr_str_float, matrix.data))
+
+def merge(chunks: list[ChunkMetadata], thread:int) -> Matrix:
     """
     Build the final numeric `Matrix` from per-chunk parse results: merge boundary-split
     tokens, realign them into proper rows, then convert each row's string tokens to
-    floats in batches of `threads` rows.
+    floats in batches of `thread` rows.
     """
-    with timer(label="load_merge"):
-        matrix = _merge_numbers(chunks)
-        matrix = _realignment(matrix)
+    pmatrix = bench("load_merge_numbers", _merge_numbers, chunks)
+    bench("load_merge_strfloat", str_float, pmatrix, thread)
+    pmatrix = bench("load_merge_realignment", _realignment, pmatrix)
 
-        with ThreadPoolExecutor(max_workers=threads) as pool:
-            list(pool.map(_arr_str_float, matrix.data))
-
-        return matrix
+    return pmatrix
