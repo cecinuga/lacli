@@ -6,19 +6,17 @@ import sys
 from pathlib import Path
 import os
 from lacli.arg import get_argparse
-from lacli.models.matrix import Matrix
-from lacli.loader.file import load
-from lacli.benchmark.bench import bench
-from lacli.benchmark.const import BENCHMARK_MODES
+import lacli.benchmark.bench as bench
+import lacli.loader.file as file
 
 print(sys.version)
 print(f"parallelism enabled: {not sys._is_gil_enabled()}")
 
-def run(file: Path, thread: int) -> Matrix:
-    """Open `file`, load it into a Matrix using `thread` threads, then close the descriptor."""
-    fd = os.open(file, os.O_RDONLY)
+def run(path: Path, thread: int):
+    """Open `path`, load it into a Matrix using `thread` threads, then close the descriptor."""
+    fd = os.open(path, os.O_RDONLY)
     try:
-        matrix = bench("load", load, fd, thread)
+        matrix = bench.bench("load", file.load, fd, thread)
     finally:
         os.close(fd)
     return matrix
@@ -28,12 +26,6 @@ if __name__ == '__main__':
     if args.thread is None:
         raise ValueError('thread numbers setted to None')
     if args.b:
-        BENCHMARK_MODES["load"] = True
-        BENCHMARK_MODES["load_read"] = True
-        BENCHMARK_MODES["load_read_file"] = True
-        BENCHMARK_MODES["load_merge"] = True
-        BENCHMARK_MODES["load_merge_numbers"] = True
-        BENCHMARK_MODES["load_merge_strfloat"] = True
-        BENCHMARK_MODES["load_merge_realignment"] = True
+        bench.enable()
 
     run(args.file, args.thread)
