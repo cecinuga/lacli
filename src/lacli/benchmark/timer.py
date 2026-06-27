@@ -2,7 +2,7 @@
 from contextlib import contextmanager
 from dataclasses import dataclass
 import time
-import lacli.benchmark.const as bench
+from lacli.benchmark.const import BENCHMARK_MODES
 
 @dataclass
 class TimerResult:
@@ -21,12 +21,9 @@ def timer(label="block"):
     Times the wrapped `with` block; `label` is currently unused. Yields a `TimerResult`
     whose `.ns` is only populated once the block exits.
     """
-    if bench.BENCHMARK_MODES[label]:
-        result = TimerResult()
-        t0 = time.perf_counter_ns()
-        try:
-            yield result
-        finally:
-            result.ns = time.perf_counter_ns() - t0
-            print(f"time elapsed for {label}: {round(result.s, 3)}")
-    else: yield None
+    result = TimerResult()
+    t0 = time.perf_counter_ns()
+    try:
+        yield result
+    finally:
+        result.ns = time.perf_counter_ns() - t0

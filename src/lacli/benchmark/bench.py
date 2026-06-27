@@ -1,0 +1,10 @@
+from lacli.benchmark.const import BENCHMARK_MODES
+from lacli.benchmark.timer import timer
+
+def bench(label:str, fn, *args):
+    if BENCHMARK_MODES[label]:
+        with timer(label) as t:
+            res = fn(*args)
+        print(f"time elapsed for {label}: {round(t.s, 3)}")
+    else: res = fn(*args)
+    return res
