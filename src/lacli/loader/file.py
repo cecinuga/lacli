@@ -14,10 +14,11 @@ def read_raw(fd: int, thread: int) -> list[bytes]:
 
     chunk_size = size//thread
     offsets = range(0, size, chunk_size)
+    print(offsets, chunk_size)
 
     with ThreadPoolExecutor(max_workers=thread) as pool:
         return list(pool.map(
-            lambda off: os.pread(fd, off, min(chunk_size, size - off)),
+            lambda off: os.pread(fd, chunk_size, min(off, size - off)),
             offsets,
     ))
 
@@ -31,6 +32,7 @@ def load(fd: int, thread: int):
     except Exception as e:
         raise RuntimeError("error reading chunks threads", e) from e
 
+    print(chunks)
     matrix = bench("load_lex", lex, chunks)
 
     #print(matrix.data)
