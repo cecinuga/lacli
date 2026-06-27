@@ -1,11 +1,11 @@
 """Integration tests: lacli.main.run output must match the dataset parsed as plain CSV."""
 import pytest
-from lacli.download.file import download
+from lacli.loader.file import load
 
 @pytest.mark.integration
-def test_download(shared_fd: int, csv_reader, thread: int):
+def test_load(shared_fd: int, csv_reader, thread: int):
     """Assert `run`'s reconstructed Matrix equals the csv.reader ground truth for each dataset/thread-count combo."""
-    matrix = download(shared_fd, thread)
+    matrix = load(shared_fd, thread)
     expected = list(csv_reader)
 
     assert len(matrix.data) == len(expected)

@@ -1,6 +1,6 @@
 """Merges per-chunk parse results into a single Matrix."""
 from concurrent.futures import ThreadPoolExecutor
-from lacli.download.chunk import ChunkMetadata
+from lacli.loader.chunk import ChunkMetadata
 from lacli.models.matrix import Matrix
 
 __all__ = ["merge"]

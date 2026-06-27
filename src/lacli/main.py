@@ -7,7 +7,7 @@ import os
 import sys
 from lacli.arg import get_argparse
 from lacli.models.matrix import Matrix
-from lacli.download.file import download
+from lacli.loader.file import load
 
 print(sys.version)
 
@@ -15,7 +15,7 @@ def run(file: Path, thread: int) -> Matrix:
     """Open `file`, load it into a Matrix using `thread` threads, then close the descriptor."""
     fd = os.open(file, os.O_RDONLY)
     try:
-        matrix = download(fd, thread)
+        matrix = load(fd, thread)
     finally:
         os.close(fd)
     return matrix

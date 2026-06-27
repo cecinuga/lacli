@@ -5,6 +5,16 @@ Linear algebra in your CLI — yayo!
 LAcli runs in your terminal and provides a set of linear algebra commands.
 All operations are performed using [NumPy](https://github.com/numpy/numpy). 
 
+**Status:** early stage. So far only the file *loader* is implemented — it reads a numeric file and reconstructs it into a `Matrix`. The linear algebra commands listed under [Feature](#feature) are still a roadmap.
+
+### Usage
+
+Requires Python >= 3.14 and NumPy. Run the loader on a numeric file:
+
+```sh
+python -m lacli.main -f path/to/file -t 4
+```
+
 ### The Problem
 How can be possible to support an huge number of filetype, format and standard without fill the software with useless dependencies for the final user, given that in the daily work use only a bunch of filetype ?
 
@@ -26,9 +36,15 @@ Go ? C ? C++ ? boh (boh for now)
 
 You can set stdin and stdout to use files, pipes, or both in powerful combinations.
 
+### Loading Pipeline
+
+The loader takes the "read the raw bytes and grab every number" route. The file is split into fixed-size byte chunks read concurrently with `os.pread` (one [`ThreadPoolExecutor`](src/lacli/download/file.py) worker per thread). The parallelism is real, not GIL-bound: it relies on the **free-threading (no-GIL) Python build** (e.g. `python3.14t`), so the worker threads run the lexing and float conversion in parallel. Each chunk is tokenized by a streaming byte-level [`Lexer`](src/lacli/download/lexer.py) into number strings, recording newline counts and boundary flags. Because byte boundaries split tokens and rows, [`merge`](src/lacli/download/merge.py) then stitches tokens cut across chunk edges, reflows them into proper `cols`-sized rows, and converts the strings to floats — producing the final [`Matrix`](src/lacli/models/matrix.py). With `-t 1` the file is loaded sequentially in a single chunk.
+
 ### Argument Parser 
 
-The argument parser should be devided by commands, like BMO (basic matrix operations), checks, rotation, factorization and so on, 
+Current flags: `-f/--file` (required, the file to load), `-t/--thread` (worker count, defaults to `os.cpu_count()`), and `-b` (enable a simple start-to-end benchmark).
+
+The parser should eventually be devided by commands, like BMO (basic matrix operations), checks, rotation, factorization and so on, 
 Each command should be devided by single feature, so every final feature should be accessible via a command and not by direct access,
 Nothing forbids to organize the command accesible feature in sub-commands and so on 
 
