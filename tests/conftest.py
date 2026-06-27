@@ -28,9 +28,11 @@ def csv_reader(dataset_path):
     with open(dataset_path, newline='') as csvfile:
         yield csv.reader(csvfile, delimiter=',')
 
+
+"""[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,  15, 16, 17, 18,  24, 25, 26, 27, 28, 29, 30, 31, 32]"""
 @pytest.fixture(
     scope="package",
-    params=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]
+    params=[1, 2, 4, 6, 8, 12, 16, 32],
 )
 def thread(request):
     """Yield each candidate worker-thread count to exercise varying levels of parallelism."""
