@@ -11,3 +11,4 @@ def bench(label:str, fn, *args):
 
 def enable():
     BENCHMARK_MODES["load"] = True
+    BENCHMARK_MODES["op"] = True

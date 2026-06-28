@@ -1,12 +1,17 @@
 """
-CLI entry point: loads a numeric CSV-like file into a Matrix by splitting it into byte
-chunks, lexing each concurrently, and stitching the per-chunk tokens back together.
+CLI entry point.
+
+Loads numeric CSV matrices via PyArrow (see `run`) and dispatches the parsed command /
+feature to the matching `lacli.core` routine. Results are printed to stdout and, when
+``-out`` is given, written to CSV by `lacli.writer`.
 """
 from pathlib import Path
 import numpy as np
 from lacli.arg import get_argparse
 import lacli.benchmark.bench as bench
 import pyarrow.csv as pv
+from lacli.core import bmo, checks, rotation, factorization
+from lacli.writer import write_csv
 
 read_opts = pv.ReadOptions(
     autogenerate_column_names=True,  # niente header → genera f0, f1, f2, ...
@@ -32,10 +37,102 @@ def run(path: Path) -> np.ndarray:
     )
     return np.column_stack([col.to_numpy() for col in table.columns])
 
+
+def _dispatch(args):
+    """Run the operation selected by `args.command` / `args.feature` and return its result."""
+    command, feature = args.command, args.feature
+
+    # [0] Basic Matrix Operations
+    if command == 'bmo':
+        if feature == 'matmul':
+            return bmo.matmul(run(args.file), run(args.file2))
+        if feature == 'add':
+            return bmo.add(run(args.file), run(args.file2))
+        if feature == 'scalar-mul':
+            return bmo.scalar_mul(run(args.file), args.scalar)
+        if feature == 'dot':
+            return bmo.dot(run(args.file), run(args.file2))
+        if feature == 'scalar-sum':
+            return bmo.scalar_sum(run(args.file), args.scalar)
+        if feature == 'inverse':
+            return bmo.inverse(run(args.file))
+        if feature == 'transpose':
+            return bmo.transpose(run(args.file))
+        if feature == 'rank':
+            return bmo.rank(run(args.file))
+
+    # [1] Checks
+    if command == 'checks':
+        a = run(args.file)
+        if feature == 'invertible':
+            return checks.is_invertible(a)
+        if feature == 'independent':
+            return checks.are_independent(a)
+        if feature == 'orthogonal':
+            return checks.are_orthogonal(a)
+        if feature == 'symmetric':
+            return checks.is_symmetric(a)
+        if feature == 'triangular':
+            return checks.is_triangular(a)
+        if feature == 'positive-definite':
+            return checks.is_positive_definite(a)
+
+    # [2] Rotations
+    if command == 'rotation' and feature == 'matrix':
+        transform, transformed = rotation.rotate(
+            run(args.file), args.angle, axis=args.axis, center=args.center,
+            scale=args.scale, shear=args.shear, perspective=args.perspective,
+        )
+        return {"transform": transform, "transformed": transformed}
+
+    # [3] Factorization
+    if command == 'factorization':
+        a = run(args.file)
+        if feature == 'gauss-jordan':
+            return {"rref": factorization.gauss_jordan(a)}
+        if feature == 'lu':
+            p, l, u = factorization.lu(a)
+            return {"P": p, "L": l, "U": u}
+        if feature == 'ldu':
+            p, l, d, u = factorization.ldu(a)
+            return {"P": p, "L": l, "D": d, "U": u}
+        if feature == 'qr':
+            q, r = factorization.qr(a)
+            return {"Q": q, "R": r}
+        if feature == 'cholesky':
+            return {"L": factorization.cholesky(a)}
+        if feature == 'orthogonal':
+            q, p = factorization.orthogonal(a)
+            return {"Q": q, "P": p}
+        if feature == 'svd':
+            u, s, vt = factorization.svd(a)
+            return {"U": u, "S": s, "Vt": vt}
+        if feature == 'eigen':
+            values, vectors = factorization.eigen(a)
+            return {"eigenvalues": values, "eigenvectors": vectors}
+
+    raise ValueError(f"unknown command/feature: {command}/{feature}")
+
+
+def _present(result) -> None:
+    """Print a result (scalar, array, or named multi-output) to stdout."""
+    if isinstance(result, dict):
+        for name, value in result.items():
+            print(f"# {name}")
+            print(np.asarray(value))
+    else:
+        print(result if np.isscalar(result) else np.asarray(result))
+
+
 if __name__ == '__main__':
     args = get_argparse().parse_args()
 
     if args.b:
         bench.enable()
 
-    data = run(args.file)
+    result = bench.bench("op", _dispatch, args)
+    _present(result)
+
+    if args.out:
+        written = write_csv(result, args.out)
+        print("written: " + ", ".join(str(p) for p in written))

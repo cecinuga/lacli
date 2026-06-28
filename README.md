@@ -121,7 +121,7 @@ Nothing forbids to organize the command accesible feature in sub-commands and so
 - [3.7] SVD
 - [3.8] eigenvalue decomposition
 
-### [4] Least Squares
+### [4] Least Squares 
 - [4.1] least squares
 - [4.2] weighted least squares
 - [4.3] least squares with regularization
