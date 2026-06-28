@@ -8,3 +8,7 @@ def bench(label:str, fn, *args):
         print(f"time elapsed for {label}: {round(t.s, 3)}")
     else: res = fn(*args)
     return res
+
+def enable():
+    BENCHMARK_MODES["load"] = True
+    BENCHMARK_MODES["op"] = True
