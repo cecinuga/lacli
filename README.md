@@ -14,6 +14,10 @@ Requires Python >= 3.14, NumPy and PyArrow.
 Every feature is reached as `<command> <feature>`, loading its matrices from CSV files:
 
 ```sh
+pip install linacon
+```
+
+```sh
 # multiply two matrices
 python -m linacon.main bmo matmul -f A.csv -g B.csv
 
