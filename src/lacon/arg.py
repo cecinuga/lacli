@@ -46,7 +46,7 @@ def _matrix_scalar(common: argparse.ArgumentParser) -> argparse.ArgumentParser:
 
 def get_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog='la-cli',
+        prog='lacon',
         description='linear algebra in your console',
         suggest_on_error=True,
     )

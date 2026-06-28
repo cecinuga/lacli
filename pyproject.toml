@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "la-cli"
+name = "lacon"
 version = "0.1.0"
-description = "linear algebra in your cli"
+description = "linear algebra in your console"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
@@ -22,7 +22,7 @@ Homepage="https://github.com/cecinuga/lacli"
 Issues="https://github.com/cecinuga/lacli/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/la_cli"]
+packages = ["src/lacon"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
