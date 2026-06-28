@@ -1,5 +1,5 @@
 """
-[3] Factorizations.
+Factorizations.
 
 Where NumPy already ships a battle-tested LAPACK routine (QR, Cholesky, SVD,
 eigendecomposition) we delegate to it. The elementary eliminations that NumPy
@@ -11,7 +11,7 @@ import numpy as np
 
 
 def gauss_jordan(a: np.ndarray, tol: float = 1e-12) -> np.ndarray:
-    """[3.1] Reduced row echelon form via Gauss-Jordan elimination with partial pivoting."""
+    """Reduced row echelon form via Gauss-Jordan elimination with partial pivoting."""
     m = np.array(a, dtype=float)
     rows, cols = m.shape
     pivot_row = 0
@@ -33,7 +33,7 @@ def gauss_jordan(a: np.ndarray, tol: float = 1e-12) -> np.ndarray:
 
 
 def lu(a: np.ndarray):
-    """[3.2] LU decomposition with partial pivoting: returns ``(P, L, U)`` with ``P @ A == L @ U``."""
+    """LU decomposition with partial pivoting: returns ``(P, L, U)`` with ``P @ A == L @ U``."""
     A = np.array(a, dtype=float)
     n, cols = A.shape
     if n != cols:
@@ -57,7 +57,7 @@ def lu(a: np.ndarray):
 
 
 def ldu(a: np.ndarray):
-    """[3.3] LDU decomposition: returns ``(P, L, D, U)`` with ``P @ A == L @ D @ U``, ``U`` unit-diagonal."""
+    """LDU decomposition: returns ``(P, L, D, U)`` with ``P @ A == L @ D @ U``, ``U`` unit-diagonal."""
     P, L, raw_u = lu(a)
     d = np.diag(raw_u).copy()
     safe = np.where(d == 0, 1.0, d)  # avoid division by zero on singular pivots
@@ -66,18 +66,18 @@ def ldu(a: np.ndarray):
 
 
 def qr(a: np.ndarray):
-    """[3.4] QR decomposition: returns ``(Q, R)`` with orthonormal ``Q`` and upper-triangular ``R``."""
+    """QR decomposition: returns ``(Q, R)`` with orthonormal ``Q`` and upper-triangular ``R``."""
     return np.linalg.qr(np.asarray(a, dtype=float))
 
 
 def cholesky(a: np.ndarray) -> np.ndarray:
-    """[3.5] Cholesky factor ``L`` (lower-triangular) of a symmetric positive-definite matrix."""
+    """Cholesky factor ``L`` (lower-triangular) of a symmetric positive-definite matrix."""
     return np.linalg.cholesky(np.asarray(a, dtype=float))
 
 
 def orthogonal(a: np.ndarray):
     """
-    [3.6] Orthogonal (polar) decomposition: returns ``(Q, P)`` with orthogonal ``Q`` and
+    Orthogonal (polar) decomposition: returns ``(Q, P)`` with orthogonal ``Q`` and
     symmetric positive-semidefinite ``P`` such that ``A == Q @ P``. Built from the SVD.
     """
     u, s, vt = np.linalg.svd(np.asarray(a, dtype=float))
@@ -87,10 +87,10 @@ def orthogonal(a: np.ndarray):
 
 
 def svd(a: np.ndarray):
-    """[3.7] Singular value decomposition: returns ``(U, s, Vt)`` with ``A == U @ diag(s) @ Vt``."""
+    """Singular value decomposition: returns ``(U, s, Vt)`` with ``A == U @ diag(s) @ Vt``."""
     return np.linalg.svd(np.asarray(a, dtype=float))
 
 
 def eigen(a: np.ndarray):
-    """[3.8] Eigenvalue decomposition: returns ``(eigenvalues, eigenvectors)`` (columns are vectors)."""
+    """Eigenvalue decomposition: returns ``(eigenvalues, eigenvectors)`` (columns are vectors)."""
     return np.linalg.eig(np.asarray(a, dtype=float))
