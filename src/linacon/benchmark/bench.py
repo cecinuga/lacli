@@ -1,5 +1,5 @@
-from lacon.benchmark.const import BENCHMARK_MODES
-from lacon.benchmark.timer import timer
+from linacon.benchmark.const import BENCHMARK_MODES
+from linacon.benchmark.timer import timer
 
 def bench(label:str, fn, *args):
     if BENCHMARK_MODES[label]:

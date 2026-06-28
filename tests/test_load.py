@@ -1,7 +1,7 @@
-"""Integration tests: lacon.main.run output must match the dataset parsed as plain CSV."""
+"""Integration tests: linacon.main.run output must match the dataset parsed as plain CSV."""
 import numpy as np
 import pytest
-from lacon.main import run
+from linacon.main import run
 
 @pytest.mark.integration
 def test_load(dataset_path, csv_reader):

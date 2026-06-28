@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "lacon"
+name = "linacon"
 version = "0.1.0"
 description = "linear algebra in your console"
 readme = "README.md"
@@ -22,7 +22,7 @@ Homepage="https://github.com/cecinuga/lacli"
 Issues="https://github.com/cecinuga/lacli/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/lacon"]
+packages = ["src/linacon"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

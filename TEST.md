@@ -1,6 +1,6 @@
 # Integration Tests
 
-`tests/` covers the file-loading path end to end: `lacon.main.run` must turn a CSV
+`tests/` covers the file-loading path end to end: `linacon.main.run` must turn a CSV
 file into a `Matrix` whose values match what Python's own `csv.reader` would
 produce from the same file, regardless of how many worker threads were used to
 parse it.
@@ -29,14 +29,14 @@ All the combinatorics come from fixtures in `conftest.py`:
 - `dataset_path` — parametrized over every file found in `tests/datasets/`
   (`scope="package"`, sorted, one test id per file).
 - `shared_fd` — opens the current `dataset_path` read-only and yields its file
-  descriptor (this is what `lacon.main.run` actually consumes).
+  descriptor (this is what `linacon.main.run` actually consumes).
 - `csv_reader` — opens the same file with the stdlib `csv` module; this is the
   ground truth the test compares against.
 - `n_thread` — parametrized over a fixed list of thread counts (1-32, skipping
   11), `scope="package"`.
 
 Because pytest expands fixture parametrization as a cross product, every
-dataset file is run through `lacon.main.run` once per thread count. This is
+dataset file is run through `linacon.main.run` once per thread count. This is
 the core property under test: parsing must be thread-count-independent and
 must match `csv.reader` exactly (values are compared as floats).
 
