@@ -32,9 +32,6 @@ Use `python -m linacon.main <command> <feature> --help` to list a feature's flag
 
 ---
 
-### Technology Stack Problem
-Pure Python is too slow, approximatelly 3sec for cicle 10000 numbers, inaceptable counting the opening of the file in memory
-
 ### I/O
 You can set stdin and stdout to use files, pipes, or both in powerful combinations.
 
