@@ -48,12 +48,6 @@ When `-out` is given, the operation's result is written back as headerless CSV v
 
 ---
 
-## TODO: 
-[1] The first big step for the development of this project is to add the support for a cospicious number of format file, so the user need to be able to compute some basic operation
-- [1.1] Implement the argument parser with the BSO command and some feature to test the file implementation
-- [1.2] Implement support for JSON
-- [1.3] Implement support for CSV
-
 ## Feature
 
 ### [0] Basic Matrix Operations
