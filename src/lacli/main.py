@@ -22,9 +22,8 @@ parse_opts = pv.ParseOptions(
     newlines_in_values=False,        # newline è SEMPRE fine riga, accelera
 )
 
-def run(path: Path, thread: int) -> np.ndarray:
+def run(path: Path) -> np.ndarray:
     """Parse `path` as a CSV matrix via pyarrow and return it as a 2D numpy array."""
-    read_opts.use_threads = thread != 1
     table = bench.bench(
         "load",
         pv.read_csv,
@@ -41,4 +40,4 @@ if __name__ == '__main__':
     if args.b:
         bench.enable()
 
-    data = run(args.file, args.thread)
+    data = run(args.file)
