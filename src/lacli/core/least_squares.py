@@ -1,5 +1,5 @@
 """
-[4] Least squares.
+Least squares.
 
 Solvers for the over-determined system ``A x ≈ b``. The plain and weighted variants
 go through NumPy's LAPACK-backed ``lstsq`` (robust to rank-deficient ``A``); the
