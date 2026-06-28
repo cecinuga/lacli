@@ -1,4 +1,4 @@
-"""Linear algebra core: basic operations, property checks, rotations and factorizations."""
-from lacli.core import bmo, checks, rotation, factorization
+"""Linear algebra core: basic operations, property checks, rotations, factorizations and least squares."""
+from lacli.core import bmo, checks, rotation, factorization, least_squares
 
-__all__ = ["bmo", "checks", "rotation", "factorization"]
+__all__ = ["bmo", "checks", "rotation", "factorization", "least_squares"]

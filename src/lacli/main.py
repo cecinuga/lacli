@@ -10,7 +10,7 @@ import numpy as np
 from lacli.arg import get_argparse
 import lacli.benchmark.bench as bench
 import pyarrow.csv as pv
-from lacli.core import bmo, checks, rotation, factorization
+from lacli.core import bmo, checks, rotation, factorization, least_squares
 from lacli.writer import write_csv
 
 read_opts = pv.ReadOptions(
@@ -110,6 +110,22 @@ def _dispatch(args):
         if feature == 'eigen':
             values, vectors = factorization.eigen(a)
             return {"eigenvalues": values, "eigenvectors": vectors}
+
+    # [4] Least Squares
+    if command == 'least-squares':
+        if feature == 'solve':
+            return least_squares.least_squares(run(args.file), run(args.file2))
+        if feature == 'regression':
+            return least_squares.linear_regression(run(args.file), run(args.file2))
+        if feature == 'weighted':
+            return least_squares.weighted_least_squares(
+                run(args.file), run(args.file2), run(args.weights))
+        if feature == 'regularized':
+            return least_squares.regularized_least_squares(
+                run(args.file), run(args.file2), args.scalar)
+        if feature == 'regularization':
+            return least_squares.regularization(
+                run(args.file), run(args.file2), run(args.gamma))
 
     raise ValueError(f"unknown command/feature: {command}/{feature}")
 

@@ -108,4 +108,19 @@ def get_argparse() -> argparse.ArgumentParser:
     factorization_feat.add_parser('svd', parents=[one], help='singular value decomposition')
     factorization_feat.add_parser('eigen', parents=[one], help='eigenvalue decomposition')
 
+    # [4] Least Squares
+    least_squares = commands.add_parser('least-squares', help='least squares solvers')
+    least_squares_feat = least_squares.add_subparsers(dest='feature', required=True, metavar='feature')
+    least_squares_feat.add_parser('solve', parents=[two], help='ordinary least squares (A=-f, b=-g)')
+    least_squares_feat.add_parser('regression', parents=[two], help='linear regression (X=-f, y=-g)')
+    weighted = least_squares_feat.add_parser('weighted', parents=[two], help='weighted least squares')
+    weighted.add_argument('-w', '--weights', dest='weights', type=str, required=True,
+                          help='per-observation weights file')
+    ridge = least_squares_feat.add_parser('regularized', parents=[two], help='ridge least squares (-k = lambda)')
+    ridge.add_argument('-k', '--scalar', dest='scalar', type=float, required=True,
+                      help='regularization strength lambda')
+    tikhonov = least_squares_feat.add_parser('regularization', parents=[two], help='Tikhonov regularization')
+    tikhonov.add_argument('--gamma', dest='gamma', type=str, required=True,
+                         help='Tikhonov regularization matrix file')
+
     return parser
