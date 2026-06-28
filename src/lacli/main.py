@@ -111,7 +111,7 @@ def _dispatch(args):
             values, vectors = factorization.eigen(a)
             return {"eigenvalues": values, "eigenvectors": vectors}
 
-    # [4] Least Squares
+    # Least Squares
     if command == 'least-squares':
         if feature == 'solve':
             return least_squares.least_squares(run(args.file), run(args.file2))

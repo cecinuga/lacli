@@ -108,7 +108,7 @@ def get_argparse() -> argparse.ArgumentParser:
     factorization_feat.add_parser('svd', parents=[one], help='singular value decomposition')
     factorization_feat.add_parser('eigen', parents=[one], help='eigenvalue decomposition')
 
-    # [4] Least Squares
+    # Least Squares
     least_squares = commands.add_parser('least-squares', help='least squares solvers')
     least_squares_feat = least_squares.add_subparsers(dest='feature', required=True, metavar='feature')
     least_squares_feat.add_parser('solve', parents=[two], help='ordinary least squares (A=-f, b=-g)')
