@@ -11,6 +11,3 @@ def bench(label:str, fn, *args):
 
 def enable():
     BENCHMARK_MODES["load"] = True
-    BENCHMARK_MODES["load_read"] = True
-    BENCHMARK_MODES["load_read_raw"] = True
-    BENCHMARK_MODES["load_lex"] = True

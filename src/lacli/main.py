@@ -4,22 +4,35 @@ chunks, lexing each concurrently, and stitching the per-chunk tokens back togeth
 """
 import sys
 from pathlib import Path
-import os
+import numpy as np
 from lacli.arg import get_argparse
 import lacli.benchmark.bench as bench
-import lacli.loader.file as file
+import pyarrow.csv as pv
 
-print(sys.version)
-print(f"parallelism enabled: {not sys._is_gil_enabled()}")
+read_opts = pv.ReadOptions(
+    autogenerate_column_names=True,  # niente header → genera f0, f1, f2, ...
+    use_threads=True,                # parsing multi-thread interno (default True)
+    block_size=8 * 1024 * 1024,      # 8MB per blocco, vedi sotto
+)
 
-def run(path: Path, thread: int):
-    """Open `path`, load it into a Matrix using `thread` threads, then close the descriptor."""
-    fd = os.open(path, os.O_RDONLY)
-    try:
-        matrix = bench.bench("load", file.load, fd, thread)
-    finally:
-        os.close(fd)
-    return matrix
+parse_opts = pv.ParseOptions(
+    delimiter=',',
+    quote_char=False,                # niente quoting, accelera il parser
+    escape_char=False,               # niente escape
+    newlines_in_values=False,        # newline è SEMPRE fine riga, accelera
+)
+
+def run(path: Path, thread: int) -> np.ndarray:
+    """Parse `path` as a CSV matrix via pyarrow and return it as a 2D numpy array."""
+    read_opts.use_threads = thread != 1
+    table = bench.bench(
+        "load",
+        pv.read_csv,
+        path,
+        read_opts,
+        parse_opts,
+    )
+    return np.column_stack([col.to_numpy() for col in table.columns])
 
 if __name__ == '__main__':
     args = get_argparse().parse_args()
@@ -28,4 +41,4 @@ if __name__ == '__main__':
     if args.b:
         bench.enable()
 
-    run(args.file, args.thread)
+    data = run(args.file, args.thread)
