@@ -2,16 +2,16 @@
 CLI entry point.
 
 Loads numeric CSV matrices via PyArrow (see `run`) and dispatches the parsed command /
-feature to the matching `la_cli.core` routine. Results are printed to stdout and, when
-``-out`` is given, written to CSV by `la_cli.writer`.
+feature to the matching `lacon.core` routine. Results are printed to stdout and, when
+``-out`` is given, written to CSV by `lacon.writer`.
 """
 from pathlib import Path
 import numpy as np
-from la_cli.arg import get_argparse
-import la_cli.benchmark.bench as bench
+from lacon.arg import get_argparse
+import lacon.benchmark.bench as bench
 import pyarrow.csv as pv
-from la_cli.core import bmo, checks, rotation, factorization, least_squares
-from la_cli.writer import write_csv
+from lacon.core import bmo, checks, rotation, factorization, least_squares
+from lacon.writer import write_csv
 
 read_opts = pv.ReadOptions(
     autogenerate_column_names=True,  # niente header → genera f0, f1, f2, ...

@@ -2,7 +2,7 @@
 from contextlib import contextmanager
 from dataclasses import dataclass
 import time
-from la_cli.benchmark.const import BENCHMARK_MODES
+from lacon.benchmark.const import BENCHMARK_MODES
 
 @dataclass
 class TimerResult:
