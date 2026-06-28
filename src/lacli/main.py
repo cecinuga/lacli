@@ -2,7 +2,6 @@
 CLI entry point: loads a numeric CSV-like file into a Matrix by splitting it into byte
 chunks, lexing each concurrently, and stitching the per-chunk tokens back together.
 """
-import sys
 from pathlib import Path
 import numpy as np
 from lacli.arg import get_argparse
@@ -35,8 +34,7 @@ def run(path: Path) -> np.ndarray:
 
 if __name__ == '__main__':
     args = get_argparse().parse_args()
-    if args.thread is None:
-        raise ValueError('thread numbers setted to None')
+
     if args.b:
         bench.enable()
 
