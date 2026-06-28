@@ -1,7 +1,7 @@
-"""Integration tests: lacli.main.run output must match the dataset parsed as plain CSV."""
+"""Integration tests: la_cli.main.run output must match the dataset parsed as plain CSV."""
 import numpy as np
 import pytest
-from lacli.main import run
+from la_cli.main import run
 
 @pytest.mark.integration
 def test_load(dataset_path, csv_reader):

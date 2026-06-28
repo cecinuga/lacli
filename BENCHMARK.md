@@ -1,4 +1,4 @@
-## Benchmark for [LAcli](https://github.com/cecinuga/lacli)
+## Benchmark for [la-cli](https://github.com/cecinuga/lacli)
 
 ## Reproducing
 To reproduce the benchmarks do this:

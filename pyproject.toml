@@ -3,18 +3,26 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "lacli"
+name = "la-cli"
 version = "0.1.0"
-description = "Add your description here"
+description = "linear algebra in your cli"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "numpy>=2.4.6",
     "pyarrow>=24.0.0",
 ]
+license = { text = "MIT" }
+authors = [
+    { name = "cecinuga", email = "matteo.marchetti.info@gmail.com" }
+]
+
+[project.urls]
+Homepage="https://github.com/cecinuga/lacli"
+Issues="https://github.com/cecinuga/lacli/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/lacli"]
+packages = ["src/la_cli"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

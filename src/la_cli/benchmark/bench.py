@@ -1,5 +1,5 @@
-from lacli.benchmark.const import BENCHMARK_MODES
-from lacli.benchmark.timer import timer
+from la_cli.benchmark.const import BENCHMARK_MODES
+from la_cli.benchmark.timer import timer
 
 def bench(label:str, fn, *args):
     if BENCHMARK_MODES[label]:
