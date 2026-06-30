@@ -14,21 +14,21 @@ Requires Python >= 3.14, NumPy and PyArrow.
 Every feature is reached as `<command> <feature>`, loading its matrices from CSV files:
 
 ```sh
-pip install linacon
+uv tool install linacon
 ```
 
 ```sh
 # multiply two matrices
-python -m linacon.main bmo matmul -f A.csv -g B.csv
+linacon bmo matmul -f A.csv -g B.csv
 
 # LU decomposition, written to CSV
-python -m linacon.main factorization lu -f A.csv -out lu.csv
+linacon factorization lu -f A.csv -out lu.csv
 
 # ridge least squares (lambda via -k)
-python -m linacon.main least-squares regularized -f A.csv -g b.csv -k 1.0
+linacon least-squares regularized -f A.csv -g b.csv -k 1.0
 ```
 
-Use `python -m linacon.main <command> <feature> --help` to list a feature's flags.
+Use `linacon <command> <feature> --help` to list a feature's flags.
 
 ---
 
