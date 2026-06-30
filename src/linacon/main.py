@@ -140,7 +140,7 @@ def _present(result) -> None:
         print(result if np.isscalar(result) else np.asarray(result))
 
 
-if __name__ == '__main__':
+def main():
     args = get_argparse().parse_args()
 
     if args.b:
@@ -152,3 +152,6 @@ if __name__ == '__main__':
     if args.out:
         written = write_csv(result, args.out)
         print("written: " + ", ".join(str(p) for p in written))
+
+if __name__ == '__main__':
+    main()
