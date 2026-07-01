@@ -6,11 +6,14 @@ optimized native code. Inputs are coerced to float `np.ndarray` to keep behaviou
 predictable regardless of how the loader typed the data.
 """
 import numpy as np
-
+from linacon.models import ShapeException
 
 def matmul(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     """Matrix multiplication for arbitrary (conformable) dimensions: ``A @ B``."""
-    return np.asarray(a, dtype=float) @ np.asarray(b, dtype=float)
+    if a.shape[1] != b.shape[0]:
+        raise ShapeException(f"Shape must be compatible: {a.shape[1]} != {b.shape[0]}")
+
+    return np.matmul(a, b, dtype=np.float32)
 
 
 def add(a: np.ndarray, b: np.ndarray) -> np.ndarray:
