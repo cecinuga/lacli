@@ -17,8 +17,11 @@ def is_invertible(a: np.ndarray, tol: float | None = None) -> bool:
 
 
 def are_independent(a: np.ndarray) -> bool:
-    """True when the column vectors are linearly independent (rank == #columns)."""
-    return int(np.linalg.matrix_rank(a)) == a.shape[1]
+    """True when the column vectors and the row vector are linearly independent (rank == #columns == #row)."""
+    if a.shape[0] != a.shape[1]:
+        return False
+    rank = int(np.linalg.matrix_rank(a))
+    return rank == a.shape[1] and rank == a.shape[0]
 
 
 def are_orthogonal(a: np.ndarray, tol: float = 1e-10) -> bool:
