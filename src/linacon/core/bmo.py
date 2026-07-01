@@ -15,11 +15,22 @@ def matmul(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
     return np.matmul(a, b, dtype=np.float32)
 
+def _matadd(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """Element-wise matrix sum: ``A + B``."""
+    if a.shape == b.shape:
+        raise ShapeException(f"Shape must be compatible: {a.shape} != {b.shape}")
+    return np.add(a, b, dtype=np.float32)
+
+def _matvectadd(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """Element-wise matrix vector sum ``A + v``."""
+    if a.shape[0] != b.shape[0] or b.shape[1] == 1:
+        raise ShapeException(f"Shape must be compatible: {a.shape[0]} != {b.shape[0]} and {b.shape[1]} != 1")
+    return np.add(a, b, dtype=np.float32)
 
 def add(a: np.ndarray, b: np.ndarray) -> np.ndarray:
-    """Element-wise matrix sum: ``A + B``."""
-    return np.asarray(a, dtype=float) + np.asarray(b, dtype=float)
-
+    if b.shape[1] != 1:
+        return _matadd(a, b)
+    return _matvectadd(a, b)
 
 def scalar_mul(a: np.ndarray, k: float) -> np.ndarray:
     """Multiply every entry of the matrix by the scalar ``k``."""
