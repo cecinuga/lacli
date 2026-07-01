@@ -1,7 +1,7 @@
 """
 CLI entry point.
 
-Loads numeric CSV matrices via PyArrow (see `run`) and dispatches the parsed command /
+Loads numeric CSV matrices via PyArrow (see `load`) and dispatches the parsed command /
 feature to the matching `linacon.core` routine. Results are printed to stdout and, when
 ``-out`` is given, written to CSV by `linacon.writer`.
 """
@@ -26,7 +26,7 @@ parse_opts = pv.ParseOptions(
     newlines_in_values=False,        # newline è SEMPRE fine riga, accelera
 )
 
-def run(path: Path) -> np.ndarray:
+def load(path: Path) -> np.ndarray:
     """Parse `path` as a CSV matrix via pyarrow and return it as a 2D numpy array."""
     table = bench.bench(
         "load",
@@ -39,31 +39,31 @@ def run(path: Path) -> np.ndarray:
 
 
 def _dispatch(args):
-    """Run the operation selected by `args.command` / `args.feature` and return its result."""
+    """load the operation selected by `args.command` / `args.feature` and return its result."""
     command, feature = args.command, args.feature
 
     # Basic Matrix Operations
     if command == 'bmo':
         if feature == 'matmul':
-            return bmo.matmul(run(args.file), run(args.file2))
+            return bmo.matmul(load(args.file), load(args.file2))
         if feature == 'add':
-            return bmo.add(run(args.file), run(args.file2))
+            return bmo.add(load(args.file), load(args.file2))
         if feature == 'scalar-mul':
-            return bmo.scalar_mul(run(args.file), args.scalar)
+            return bmo.scalar_mul(load(args.file), args.scalar)
         if feature == 'dot':
-            return bmo.dot(run(args.file), run(args.file2))
+            return bmo.dot(load(args.file), load(args.file2))
         if feature == 'scalar-sum':
-            return bmo.scalar_sum(run(args.file), args.scalar)
+            return bmo.scalar_sum(load(args.file), args.scalar)
         if feature == 'inverse':
-            return bmo.inverse(run(args.file))
+            return bmo.inverse(load(args.file))
         if feature == 'transpose':
-            return bmo.transpose(run(args.file))
+            return bmo.transpose(load(args.file))
         if feature == 'rank':
-            return bmo.rank(run(args.file))
+            return bmo.rank(load(args.file))
 
     # Checks
     if command == 'checks':
-        a = run(args.file)
+        a = load(args.file)
         if feature == 'invertible':
             return checks.is_invertible(a)
         if feature == 'independent':
@@ -80,14 +80,14 @@ def _dispatch(args):
     # Rotations
     if command == 'rotation' and feature == 'matrix':
         transform, transformed = rotation.rotate(
-            run(args.file), args.angle, axis=args.axis, center=args.center,
+            load(args.file), args.angle, axis=args.axis, center=args.center,
             scale=args.scale, shear=args.shear, perspective=args.perspective,
         )
         return {"transform": transform, "transformed": transformed}
 
     # Factorization
     if command == 'factorization':
-        a = run(args.file)
+        a = load(args.file)
         if feature == 'gauss-jordan':
             return {"rref": factorization.gauss_jordan(a)}
         if feature == 'lu':
@@ -114,18 +114,18 @@ def _dispatch(args):
     # Least Squares
     if command == 'least-squares':
         if feature == 'solve':
-            return least_squares.least_squares(run(args.file), run(args.file2))
+            return least_squares.least_squares(load(args.file), load(args.file2))
         if feature == 'regression':
-            return least_squares.linear_regression(run(args.file), run(args.file2))
+            return least_squares.linear_regression(load(args.file), load(args.file2))
         if feature == 'weighted':
             return least_squares.weighted_least_squares(
-                run(args.file), run(args.file2), run(args.weights))
+                load(args.file), load(args.file2), load(args.weights))
         if feature == 'regularized':
             return least_squares.regularized_least_squares(
-                run(args.file), run(args.file2), args.scalar)
+                load(args.file), load(args.file2), args.scalar)
         if feature == 'regularization':
             return least_squares.regularization(
-                run(args.file), run(args.file2), run(args.gamma))
+                load(args.file), load(args.file2), load(args.gamma))
 
     raise ValueError(f"unknown command/feature: {command}/{feature}")
 
