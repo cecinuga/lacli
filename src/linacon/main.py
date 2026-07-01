@@ -42,7 +42,7 @@ def _dispatch(args):
     """Run the operation selected by `args.command` / `args.feature` and return its result."""
     command, feature = args.command, args.feature
 
-    # [0] Basic Matrix Operations
+    # Basic Matrix Operations
     if command == 'bmo':
         if feature == 'matmul':
             return bmo.matmul(run(args.file), run(args.file2))
@@ -61,7 +61,7 @@ def _dispatch(args):
         if feature == 'rank':
             return bmo.rank(run(args.file))
 
-    # [1] Checks
+    # Checks
     if command == 'checks':
         a = run(args.file)
         if feature == 'invertible':
@@ -77,7 +77,7 @@ def _dispatch(args):
         if feature == 'positive-definite':
             return checks.is_positive_definite(a)
 
-    # [2] Rotations
+    # Rotations
     if command == 'rotation' and feature == 'matrix':
         transform, transformed = rotation.rotate(
             run(args.file), args.angle, axis=args.axis, center=args.center,
@@ -85,7 +85,7 @@ def _dispatch(args):
         )
         return {"transform": transform, "transformed": transformed}
 
-    # [3] Factorization
+    # Factorization
     if command == 'factorization':
         a = run(args.file)
         if feature == 'gauss-jordan':
