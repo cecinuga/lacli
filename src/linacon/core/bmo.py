@@ -17,7 +17,7 @@ def matmul(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
 def _matadd(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     """Element-wise matrix sum: ``A + B``."""
-    if a.shape == b.shape:
+    if a.shape != b.shape:
         raise ShapeException(f"Shape must be compatible: {a.shape} != {b.shape}")
     return np.add(a, b, dtype=np.float32)
 
@@ -34,30 +34,26 @@ def add(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
 def scalar_mul(a: np.ndarray, k: float) -> np.ndarray:
     """Multiply every entry of the matrix by the scalar ``k``."""
-    return np.asarray(a, dtype=float) * float(k)
-
+    return a * k
 
 def dot(a: np.ndarray, b: np.ndarray) -> float:
     """Scalar dot product of two vectors; inputs are flattened first."""
-    return float(np.dot(np.ravel(np.asarray(a, dtype=float)),
-                        np.ravel(np.asarray(b, dtype=float))))
-
+    if a.shape != b.shape:
+        raise ShapeException(f"Shape must be compatible: {a.shape} != {b.shape}")
+    return np.dot(a, b)
 
 def scalar_sum(a: np.ndarray, k: float) -> np.ndarray:
     """Add the scalar ``k`` to every entry of the matrix."""
-    return np.asarray(a, dtype=float) + float(k)
-
+    return a + k
 
 def inverse(a: np.ndarray) -> np.ndarray:
     """Inverse of a square, non-singular matrix."""
-    return np.linalg.inv(np.asarray(a, dtype=float))
-
+    return np.linalg.inv(a)
 
 def transpose(a: np.ndarray) -> np.ndarray:
     """Transpose of the matrix."""
-    return np.asarray(a, dtype=float).T
-
+    return a.T
 
 def rank(a: np.ndarray) -> int:
     """Numerical rank via the singular value decomposition."""
-    return int(np.linalg.matrix_rank(np.asarray(a, dtype=float)))
+    return int(np.linalg.matrix_rank(a))
