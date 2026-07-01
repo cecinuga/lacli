@@ -57,7 +57,7 @@ def get_argparse() -> argparse.ArgumentParser:
     two = _two_matrix(common)
     scalar = _matrix_scalar(common)
 
-    # [0] Basic Matrix Operations
+    # Basic Matrix Operations
     bmo = commands.add_parser('bmo', help='basic matrix operations')
     bmo_feat = bmo.add_subparsers(dest='feature', required=True, metavar='feature')
     bmo_feat.add_parser('matmul', parents=[two], help='matrix multiplication')
@@ -69,7 +69,7 @@ def get_argparse() -> argparse.ArgumentParser:
     bmo_feat.add_parser('transpose', parents=[one], help='transpose')
     bmo_feat.add_parser('rank', parents=[one], help='rank')
 
-    # [1] Checks
+    # Checks
     checks = commands.add_parser('checks', help='matrix property checks')
     checks_feat = checks.add_subparsers(dest='feature', required=True, metavar='feature')
     checks_feat.add_parser('invertible', parents=[one], help='invertibility check')
@@ -79,7 +79,7 @@ def get_argparse() -> argparse.ArgumentParser:
     checks_feat.add_parser('triangular', parents=[one], help='triangular check')
     checks_feat.add_parser('positive-definite', parents=[one], help='positive-definite check')
 
-    # [2] Rotations
+    # Rotations
     rotation = commands.add_parser('rotation', help='rotations and affine transforms')
     rotation_feat = rotation.add_subparsers(dest='feature', required=True, metavar='feature')
     rotate = rotation_feat.add_parser('matrix', parents=[one],
@@ -96,7 +96,7 @@ def get_argparse() -> argparse.ArgumentParser:
     rotate.add_argument('--perspective', type=float, nargs='+', default=None,
                         help='perspective coefficients (homogeneous bottom row)')
 
-    # [3] Factorization
+    # Factorization
     factorization = commands.add_parser('factorization', help='matrix factorizations')
     factorization_feat = factorization.add_subparsers(dest='feature', required=True, metavar='feature')
     factorization_feat.add_parser('gauss-jordan', parents=[one], help='Gauss-Jordan elimination (RREF)')
