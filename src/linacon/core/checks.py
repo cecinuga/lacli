@@ -11,7 +11,6 @@ import numpy as np
 
 def is_invertible(a: np.ndarray, tol: float | None = None) -> bool:
     """True when the matrix is square and has full rank (hence invertible)."""
-    a = np.asarray(a, dtype=float)
     if a.ndim != 2 or a.shape[0] != a.shape[1]:
         return False
     return int(np.linalg.matrix_rank(a, tol=tol)) == a.shape[0]
@@ -19,13 +18,11 @@ def is_invertible(a: np.ndarray, tol: float | None = None) -> bool:
 
 def are_independent(a: np.ndarray) -> bool:
     """True when the column vectors are linearly independent (rank == #columns)."""
-    a = np.asarray(a, dtype=float)
     return int(np.linalg.matrix_rank(a)) == a.shape[1]
 
 
 def are_orthogonal(a: np.ndarray, tol: float = 1e-10) -> bool:
     """True when the column vectors are pairwise orthogonal (Gram matrix is diagonal)."""
-    a = np.asarray(a, dtype=float)
     gram = a.T @ a
     off_diagonal = gram - np.diag(np.diag(gram))
     return bool(np.all(np.abs(off_diagonal) <= tol))
@@ -33,13 +30,11 @@ def are_orthogonal(a: np.ndarray, tol: float = 1e-10) -> bool:
 
 def is_symmetric(a: np.ndarray, tol: float = 1e-10) -> bool:
     """True when the matrix is square and equal to its transpose."""
-    a = np.asarray(a, dtype=float)
     return a.ndim == 2 and a.shape[0] == a.shape[1] and bool(np.allclose(a, a.T, atol=tol))
 
 
 def is_triangular(a: np.ndarray, tol: float = 1e-10) -> bool:
     """True when the matrix is upper- or lower-triangular within ``tol``."""
-    a = np.asarray(a, dtype=float)
     upper = np.allclose(a, np.triu(a), atol=tol)
     lower = np.allclose(a, np.tril(a), atol=tol)
     return bool(upper or lower)
@@ -47,7 +42,6 @@ def is_triangular(a: np.ndarray, tol: float = 1e-10) -> bool:
 
 def is_positive_definite(a: np.ndarray, tol: float = 1e-10) -> bool:
     """True when the matrix is symmetric and its Cholesky factorization exists."""
-    a = np.asarray(a, dtype=float)
     if not is_symmetric(a, tol):
         return False
     try:
